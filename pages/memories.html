@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Love Story - Every Moment With You 💜</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:wght@400;700&family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background-attachment: fixed;
+            overflow-x: hidden;
+        }
+        .title-font {
+            font-family: 'Playfair Display', serif;
+        }
+        .script-font {
+            font-family: 'Dancing Script', cursive;
+        }
+        .glass-card {
+            backdrop-filter: blur(16px) saturate(180%);
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Carousel Container */
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            overflow: hidden;
+            border-radius: 20px;
+        }
+
+        /* Carousel Track */
+        .carousel-track {
+            display: flex;
+            transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        /* Individual Slide */
+        .carousel-slide {
+            min-width: 100%;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .memory-image-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            height: 500px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
+            margin-bottom: 30px;
+        }
+
+        .memory-image, .memory-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .memory-image-container:hover .memory-image,
+        .memory-image-container:hover .memory-video {
+            transform: scale(1.05);
+        }
+
+        .memory-caption {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 700px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(10px);
+        }
+
+        .memory-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: #764ba2;
+            margin-bottom: 15px;
+        }
+
+        .memory-story {
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            line-height: 1.8;
+            color: #444;
+            margin-bottom: 10px;
+        }
+
+        .memory-date {
+            font-family: 'Dancing Script', cursive;
+            font-size: 18px;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        /* Navigation Buttons */
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            font-size: 28px;
+            cursor: pointer;
+            z-index: 100;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #764ba2;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .carousel-btn:hover {
+            background: white;
+            transform: translateY(-50%) scale(1.1);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .carousel-btn.prev {
+            left: 20px;
+        }
+
+        .carousel-btn.next {
+            right: 20px;
+        }
+
+        /* Progress Dots */
+        .carousel-dots {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dot.active {
+            background: white;
+            width: 40px;
+            border-radius: 6px;
+        }
+
+        /* Progress Counter */
+        .progress-counter {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            color: #764ba2;
+            z-index: 100;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Floating Hearts Animation */
+        .floating-hearts {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            animation: floatUp 6s ease-in infinite;
+            opacity: 0;
+        }
+
+        @keyframes floatUp {
+            0% {
+                opacity: 0;
+                transform: translateY(0) scale(1);
+            }
+            50% {
+                opacity: 0.8;
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-1000px) scale(1.5);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 1s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .memory-image-container {
+                height: 300px;
+            }
+
+            .memory-title {
+                font-size: 22px;
+            }
+
+            .memory-story {
+                font-size: 14px;
+            }
+
+            .carousel-btn {
+                width: 45px;
+                height: 45px;
+                font-size: 20px;
+            }
+
+            .carousel-btn.prev {
+                left: 10px;
+            }
+
+            .carousel-btn.next {
+                right: 10px;
+            }
+
+            .progress-counter {
+                top: 10px;
+                right: 10px;
+                padding: 8px 16px;
+                font-size: 12px;
+            }
+        }
+
+        /* Video Play Button */
+        .play-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            color: #764ba2;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .play-button:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+            background: white;
+        }
+
+        .video-playing .play-button {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Hearts Background -->
+    <div class="floating-hearts" id="hearts-container"></div>
+
+    <!-- Main Container -->
+    <div class="min-h-screen py-12 px-4 relative z-10">
+        <!-- Header -->
+        <div class="text-center mb-12 fade-in">
+            <h1 class="text-5xl md:text-6xl font-bold title-font text-white mb-4">
+                Our Love Story 💜
+            </h1>
+            <p class="text-xl md:text-2xl script-font text-white opacity-90">
+                Every moment with you is a memory I treasure forever
+            </p>
+        </div>
+
+        <!-- Carousel Container -->
+        <div class="carousel-container glass-card p-8 mb-8">
+            <!-- Progress Counter -->
+            <div class="progress-counter">
+                <span id="current-slide">1</span> / <span id="total-slides">10</span>
+            </div>
+
+            <!-- Carousel Track -->
+            <div class="carousel-track" id="carousel-track">
+                <!-- Slides will be dynamically inserted here -->
+            </div>
+
+            <!-- Navigation Buttons -->
+            <button class="carousel-btn prev" onclick="navigate(-1)">‹</button>
+            <button class="carousel-btn next" onclick="navigate(1)">›</button>
+        </div>
+
+        <!-- Progress Dots -->
+        <div class="carousel-dots" id="carousel-dots"></div>
+
+        <!-- Footer -->
+        <div class="text-center mt-12">
+            <div class="glass-card max-w-2xl mx-auto p-8 mb-6">
+                <p class="text-xl text-gray-700 italic mb-3">
+                    "Every moment was written in the stars, but we chose to make it real."
+                </p>
+                <p class="text-gray-600 mb-2">
+                    Happy One Month Anniversary, My Love 💜
+                </p>
+                <p class="text-sm text-gray-500">
+                    Made with intentional love • October 8, 2025
+                </p>
+            </div>
+            
+            <a href="anniversary-landing.html" 
+               class="inline-block px-8 py-4 bg-white text-purple-600 rounded-full font-semibold text-lg hover:bg-purple-50 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105">
+                ← Back to Home
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Memory Data with Stories
+        const memories = [
+            {
+                type: 'image',
+                src: 'img/20250913_182321.jpg',
+                date: 'September 13, 2025',
+                title: 'The Day Everything Changed',
+                story: 'I remember this moment like it was yesterday. The way you smiled, the way the light caught your eyes... I knew then that you were someone special. Someone I wanted to know forever.'
+            },
+            {
+                type: 'video',
+                src: 'video/VID-20250910-WA0009.mp4',
+                date: 'September 10, 2025',
+                title: 'Your Laughter',
+                story: 'This video captures what I love most - your genuine laughter. Every time I hear it, my world gets brighter. You have this way of making even the simplest moments feel magical.'
+            },
+            {
+                type: 'image',
+                src: 'img/IMG-20250914-WA0019.jpg',
+                date: 'September 14, 2025',
+                title: 'Natural Beauty',
+                story: 'You don\'t even realize how beautiful you are. It\'s not just what I see, but who you are - your kindness, your strength, your faith. Everything about you draws me closer.'
+            },
+            {
+                type: 'image',
+                src: 'img/IMG-20250914-WA0020.jpg',
+                date: 'September 14, 2025',
+                title: 'Those Eyes',
+                story: 'When you look at me, I feel seen. Really seen. Not just for who I am today, but for who I\'m becoming. Thank you for seeing me, Ayomide. Thank you for believing in us.'
+            },
+            {
+                type: 'image',
+                src: 'img/20250916_173540.jpg',
+                date: 'September 16, 2025',
+                title: 'My Oluwasetemi',
+                story: 'Oluwasetemi - "God supports me." That\'s who you are to me. My support, my strength, my Firelighter. Every day with you feels like a gift I didn\'t know I was waiting for.'
+            },
+            {
+                type: 'image',
+                src: 'img/IMG-20250914-WA0024.jpg',
+                date: 'September 14, 2025',
+                title: 'Radiant Smile',
+                story: 'Your smile could light up the darkest room. It lights up my life. When you\'re happy, I\'m happy. Your joy is contagious, and I want to spend forever making you smile like this.'
+            },
+            {
+                type: 'image',
+                src: 'img/IMG-20250914-WA0028.jpg',
+                date: 'September 14, 2025',
+                title: 'Grace and Elegance',
+                story: 'There\'s something about the way you carry yourself - graceful, confident, beautiful. You command attention without even trying. I\'m so proud to call you mine, Oluwasetemi.'
+            },
+            {
+                type: 'video',
+                src: 'video/VID-20251007-WA0001.mp4',
+                date: 'September 7, 2025',
+                title: 'The Day Before Forever',
+                story: 'One day before we became official. I was nervous, excited, sure. This video reminds me of that anticipation - knowing something beautiful was about to begin. And it did. We did.'
+            },
+            {
+                type: 'image',
+                src: 'img/IMG-20250914-WA0032.jpg',
+                date: 'September 14, 2025',
+                title: 'My Odunayo',
+                story: 'Odunayo - "Sweetness has arrived." You are exactly that. My sweetness, my joy, my treasure. I promise to honor you, cherish you, and love you with everything I have. You deserve the world.'
+            },
+            {
+                type: 'image',
+                src: 'img/IMG-20250914-WA0038.jpg',
+                date: 'September 14, 2025',
+                title: 'Forever Starts Now',
+                story: 'This is just the beginning, my love. One month down, a lifetime to go. Every photo, every video, every moment we share is another chapter in our story. And I can\'t wait to write them all with you. I love you, Ayomide. Always. - Your LumLum 💜'
+            }
+        ];
+
+        let currentIndex = 0;
+
+        // Initialize Carousel
+        function initCarousel() {
+            const track = document.getElementById('carousel-track');
+            const dotsContainer = document.getElementById('carousel-dots');
+            const totalSlides = document.getElementById('total-slides');
+
+            totalSlides.textContent = memories.length;
+
+            // Create slides
+            memories.forEach((memory, index) => {
+                const slide = document.createElement('div');
+                slide.className = 'carousel-slide';
+
+                if (memory.type === 'image') {
+                    slide.innerHTML = `
+                        <div class="memory-image-container">
+                            <img src="${memory.src}" alt="${memory.title}" class="memory-image">
+                        </div>
+                        <div class="memory-caption">
+                            <h2 class="memory-title">${memory.title}</h2>
+                            <p class="memory-story">${memory.story}</p>
+                            <p class="memory-date">${memory.date}</p>
+                        </div>
+                    `;
+                } else {
+                    slide.innerHTML = `
+                        <div class="memory-image-container" id="video-container-${index}">
+                            <video class="memory-video" id="video-${index}" preload="metadata">
+                                <source src="${memory.src}" type="video/mp4">
+                            </video>
+                            <div class="play-button" onclick="playVideo(${index})">▶</div>
+                        </div>
+                        <div class="memory-caption">
+                            <h2 class="memory-title">${memory.title}</h2>
+                            <p class="memory-story">${memory.story}</p>
+                            <p class="memory-date">${memory.date}</p>
+                        </div>
+                    `;
+                }
+
+                track.appendChild(slide);
+
+                // Create dot
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                if (index === 0) dot.classList.add('active');
+                dot.onclick = () => goToSlide(index);
+                dotsContainer.appendChild(dot);
+            });
+
+            updateSlide();
+        }
+
+        // Navigate Carousel
+        function navigate(direction) {
+            currentIndex += direction;
+
+            if (currentIndex < 0) {
+                currentIndex = memories.length - 1;
+            } else if (currentIndex >= memories.length) {
+                currentIndex = 0;
+            }
+
+            updateSlide();
+        }
+
+        // Go to Specific Slide
+        function goToSlide(index) {
+            currentIndex = index;
+            updateSlide();
+        }
+
+        // Update Slide Display
+        function updateSlide() {
+            const track = document.getElementById('carousel-track');
+            const dots = document.querySelectorAll('.dot');
+            const currentSlideDisplay = document.getElementById('current-slide');
+
+            track.style.transform = `translateX(-${currentIndex * 100}%)`;
+            currentSlideDisplay.textContent = currentIndex + 1;
+
+            // Update dots
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentIndex);
+            });
+
+            // Pause all videos
+            document.querySelectorAll('video').forEach(video => {
+                video.pause();
+                video.currentTime = 0;
+            });
+            document.querySelectorAll('.play-button').forEach(btn => {
+                btn.style.display = 'flex';
+            });
+        }
+
+        // Play Video
+        function playVideo(index) {
+            const video = document.getElementById(`video-${index}`);
+            const container = document.getElementById(`video-container-${index}`);
+            const playButton = container.querySelector('.play-button');
+
+            if (video.paused) {
+                video.play();
+                playButton.style.display = 'none';
+                container.classList.add('video-playing');
+            } else {
+                video.pause();
+                playButton.style.display = 'flex';
+                container.classList.remove('video-playing');
+            }
+        }
+
+        // Keyboard Navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') navigate(-1);
+            if (e.key === 'ArrowRight') navigate(1);
+        });
+
+        // Touch Swipe Support
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            if (touchStartX - touchEndX > 50) {
+                navigate(1); // Swipe left
+            }
+            if (touchEndX - touchStartX > 50) {
+                navigate(-1); // Swipe right
+            }
+        }
+
+        // Floating Hearts
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.innerHTML = '💜';
+            heart.style.left = Math.random() * 100 + '%';
+            heart.style.animationDuration = (Math.random() * 3 + 4) + 's';
+            heart.style.animationDelay = Math.random() * 2 + 's';
+            
+            document.getElementById('hearts-container').appendChild(heart);
+            
+            setTimeout(() => heart.remove(), 8000);
+        }
+
+        // Initialize
+        window.onload = () => {
+            initCarousel();
+            
+            // Create hearts periodically
+            setInterval(createHeart, 800);
+        };
+    </script>
+</body>
+</html>

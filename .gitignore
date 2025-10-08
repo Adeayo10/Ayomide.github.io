@@ -1,0 +1,8 @@
+# Ignore everything in this directory
+hopperrlhfassessment
+hopperrlhfassessment/*
+
+# Ignore all markdown files
+*.md
+
+

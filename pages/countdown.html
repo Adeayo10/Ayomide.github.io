@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Counting Every Moment - For Ayomide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background-size: 400% 400%;
+            animation: gradientFlow 20s ease infinite;
+        }
+        @keyframes gradientFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .title-font {
+            font-family: 'Playfair Display', serif;
+        }
+        .glass-card {
+            backdrop-filter: blur(16px) saturate(180%);
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .counter-box {
+            backdrop-filter: blur(10px);
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        .pulse-glow {
+            animation: pulseGlow 2s ease-in-out infinite;
+        }
+        @keyframes pulseGlow {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(240, 147, 251, 0.4), 0 0 40px rgba(245, 87, 108, 0.2);
+            }
+            50% {
+                box-shadow: 0 0 30px rgba(240, 147, 251, 0.6), 0 0 60px rgba(245, 87, 108, 0.4);
+            }
+        }
+        .sparkle {
+            position: fixed;
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: sparkleAnimation 3s ease-out forwards;
+        }
+        @keyframes sparkleAnimation {
+            0% {
+                transform: scale(0) translateY(0);
+                opacity: 1;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1.5) translateY(-100px);
+                opacity: 0;
+            }
+        }
+        .fade-in {
+            animation: fadeIn 1s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .music-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            background: rgba(102, 126, 234, 0.9);
+            transition: all 0.3s ease;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .music-btn:hover {
+            transform: scale(1.1) rotate(10deg);
+            background: rgba(118, 75, 162, 0.9);
+        }
+        
+        .tick-sound {
+            animation: tickPulse 1s ease-in-out infinite;
+        }
+        
+        @keyframes tickPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+    <div class="glass-card max-w-4xl w-full rounded-3xl shadow-2xl p-8 md:p-12 text-center fade-in">
+        <!-- Heart Icon -->
+        <div class="text-6xl mb-6 pulse-glow inline-block">
+            💖
+        </div>
+
+        <!-- Title -->
+        <h1 class="title-font text-4xl md:text-6xl font-bold text-gray-800 mb-4">
+            Counting Every Moment
+        </h1>
+        
+        <p class="text-xl md:text-2xl text-gray-700 mb-3">
+            Since we became <span class="font-bold text-purple-700">official</span>
+        </p>
+        
+        <p class="text-gray-600 mb-12 italic">
+            One month ago, we chose forever. Here's proof it grows stronger every second.
+        </p>
+
+        <!-- Date Display -->
+        <div class="counter-box rounded-2xl p-6 mb-8 pulse-glow">
+            <p class="text-sm text-purple-600 font-semibold mb-2">Our Anniversary Date</p>
+            <p class="text-3xl font-bold text-gray-800">September 8, 2025</p>
+        </div>
+
+        <!-- Counter Display -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+            <!-- Days -->
+            <div class="counter-box rounded-2xl p-6">
+                <p class="text-4xl md:text-5xl font-bold text-purple-700" id="days">0</p>
+                <p class="text-sm text-gray-600 mt-2 font-semibold">Days</p>
+            </div>
+            
+            <!-- Hours -->
+            <div class="counter-box rounded-2xl p-6">
+                <p class="text-4xl md:text-5xl font-bold text-pink-600" id="hours">0</p>
+                <p class="text-sm text-gray-600 mt-2 font-semibold">Hours</p>
+            </div>
+            
+            <!-- Minutes -->
+            <div class="counter-box rounded-2xl p-6">
+                <p class="text-4xl md:text-5xl font-bold text-purple-600" id="minutes">0</p>
+                <p class="text-sm text-gray-600 mt-2 font-semibold">Minutes</p>
+            </div>
+            
+            <!-- Seconds -->
+            <div class="counter-box rounded-2xl p-6">
+                <p class="text-4xl md:text-5xl font-bold text-pink-700" id="seconds">0</p>
+                <p class="text-sm text-gray-600 mt-2 font-semibold">Seconds</p>
+            </div>
+        </div>
+
+        <!-- Message -->
+        <div class="counter-box rounded-2xl p-8 mb-8">
+            <p class="text-lg md:text-xl text-gray-700 leading-relaxed italic">
+                "Every second that passes is another second I've loved you intentionally. 
+                Distance may keep us apart physically, but time only brings us closer. 
+                This counter will never stop — just like my commitment to you."
+            </p>
+        </div>
+
+        <!-- Total Seconds Display -->
+        <div class="counter-box rounded-2xl p-6 mb-8">
+            <p class="text-sm text-gray-600 mb-2">Total Seconds Together</p>
+            <p class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600" id="totalSeconds">0</p>
+        </div>
+
+        <!-- Footer -->
+        <div class="mt-12 pt-6 border-t border-gray-200">
+            <p class="text-gray-700 text-lg font-semibold mb-2">
+                Happy One Month Anniversary, Ayomide 💜
+            </p>
+            <p class="text-gray-600 italic">
+                This is just the beginning of forever
+            </p>
+            <p class="text-sm text-gray-500 mt-4">
+                Made with endless love, November 8, 2025
+            </p>
+            <a href="anniversary-landing.html" class="inline-block mt-6 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-full hover:shadow-lg transition-all">
+                ← Back to Home
+            </a>
+        </div>
+    </div>
+
+    <!-- Music Button -->
+    <button id="musicBtn" class="music-btn" title="Toggle Music">
+        <svg id="playIcon" class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M8 5v14l11-7z"/>
+        </svg>
+        <svg id="pauseIcon" class="w-8 h-8 text-white hidden" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
+        </svg>
+    </button>
+
+    <script>
+        // Set the anniversary date (September 8, 2025 - we became official)
+        const anniversaryDate = new Date('2025-09-08T00:00:00').getTime();
+        
+        // Audio context for tick sound
+        let audioContext;
+        let isPlaying = false;
+        
+        function initAudio() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+        
+        function playTickSound() {
+            if (!audioContext || !isPlaying) return;
+            
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.value = 1000;
+            oscillator.type = 'sine';
+            
+            gainNode.gain.setValueAtTime(0.05, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.1);
+        }
+
+        function updateCounter() {
+            const now = new Date().getTime();
+            const timeDifference = now - anniversaryDate;
+
+            // Calculate time units
+            const seconds = Math.floor(timeDifference / 1000);
+            const minutes = Math.floor(seconds / 60);
+            const hours = Math.floor(minutes / 60);
+            const days = Math.floor(hours / 24);
+
+            // Update display with animation
+            const secondsEl = document.getElementById('seconds');
+            const prevSeconds = secondsEl.textContent;
+            const newSeconds = seconds % 60;
+            
+            if (prevSeconds != newSeconds) {
+                secondsEl.classList.add('tick-sound');
+                setTimeout(() => secondsEl.classList.remove('tick-sound'), 500);
+                playTickSound();
+            }
+
+            document.getElementById('days').textContent = days;
+            document.getElementById('hours').textContent = hours % 24;
+            document.getElementById('minutes').textContent = minutes % 60;
+            secondsEl.textContent = newSeconds;
+            document.getElementById('totalSeconds').textContent = seconds.toLocaleString();
+        }
+
+        // Create sparkle effect periodically
+        function createSparkle() {
+            const sparkle = document.createElement('div');
+            sparkle.className = 'sparkle';
+            sparkle.style.left = Math.random() * window.innerWidth + 'px';
+            sparkle.style.top = Math.random() * window.innerHeight + 'px';
+            document.body.appendChild(sparkle);
+
+            setTimeout(() => sparkle.remove(), 3000);
+        }
+
+        // Update counter every second
+        updateCounter();
+        setInterval(updateCounter, 1000);
+
+        // Create sparkles every 2 seconds
+        setInterval(createSparkle, 2000);
+
+        // Initial sparkles
+        for (let i = 0; i < 5; i++) {
+            setTimeout(createSparkle, i * 400);
+        }
+        
+        // Music control
+        const musicBtn = document.getElementById('musicBtn');
+        const playIcon = document.getElementById('playIcon');
+        const pauseIcon = document.getElementById('pauseIcon');
+        let oscillators = [];
+        let gainNode;
+
+        musicBtn.addEventListener('click', () => {
+            initAudio();
+            
+            if (!isPlaying) {
+                // Start ambient music
+                gainNode = audioContext.createGain();
+                gainNode.gain.value = 0.06;
+                gainNode.connect(audioContext.destination);
+                
+                const notes = [220, 329.63, 440, 554.37]; // A3, E4, A4, C#5
+                
+                notes.forEach((freq, i) => {
+                    const osc = audioContext.createOscillator();
+                    osc.type = 'sine';
+                    osc.frequency.value = freq;
+                    
+                    const oscGain = audioContext.createGain();
+                    oscGain.gain.value = 0.25;
+                    
+                    osc.connect(oscGain);
+                    oscGain.connect(gainNode);
+                    
+                    osc.start();
+                    oscillators.push(osc);
+                });
+                
+                isPlaying = true;
+                playIcon.classList.add('hidden');
+                pauseIcon.classList.remove('hidden');
+            } else {
+                // Stop music
+                oscillators.forEach(osc => {
+                    try { osc.stop(); } catch(e) {}
+                });
+                oscillators = [];
+                isPlaying = false;
+                playIcon.classList.remove('hidden');
+                pauseIcon.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>

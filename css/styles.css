@@ -1,0 +1,243 @@
+html {
+    scroll-behavior: smooth;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Great Vibes', cursive;
+    color: #d16ba5;
+}
+
+.message p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    margin: 10px 0;
+}
+/* Animated gradient background */
+body {
+    font-family: 'Open Sans', sans-serif;
+    background: linear-gradient(120deg, #ffdde1, #ee9ca7);
+    background-size: 400% 400%;
+    animation: gradientBG 10s ease infinite;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    display: block;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Floating hearts */
+.heart {
+    position: fixed;
+    bottom: 0;
+    width: 20px;
+    height: 20px;
+    background: #ff6b81;
+    opacity: 0.8;
+    border-radius: 50%;
+    animation: float 5s ease-in-out infinite;
+    z-index: 1000;
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-100vh) scale(0.5);
+        opacity: 0;
+    }
+}
+
+.container {
+    background: #fff;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    max-width: 600px;
+    text-align: center;
+    margin: 20px auto;
+}
+
+.title {
+    font-family: 'Great Vibes', cursive;
+    font-size: 2.5rem;
+    color: #d16ba5;
+    margin-bottom: 20px;
+}
+
+.message p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    margin: 10px 0;
+}
+
+.highlight {
+    font-weight: bold;
+    color: #d16ba5;
+}
+
+.signature {
+    font-family: 'Great Vibes', cursive;
+    font-size: 1.8rem;
+    color: #d16ba5;
+    margin-top: 20px;
+}
+
+.audio-container {
+    margin: 20px 0;
+}
+
+.back-link {
+    display: inline-block;
+    margin-top: 20px;
+    text-decoration: none;
+    color: #fff;
+    background: #d16ba5;
+    padding: 10px 20px;
+    border-radius: 25px;
+    transition: background 0.3s ease;
+}
+
+.back-link:hover {
+    background: #c94b8a;
+}
+
+
+
+.play-pause-button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    background: #d16ba5;
+    color: #fff;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.3s ease;
+}
+
+.play-pause-button:hover {
+    background: #c94b8a;
+}
+
+.back-to-top {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    background: #d16ba5;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.back-to-top.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.back-to-top:hover {
+    background: #c94b8a;
+}
+/* Glowing heart */
+.glowing-heart {
+    width: 100px;
+    height: 100px;
+    margin: 20px auto;
+    background: radial-gradient(circle, #ff6b81 30%, transparent 70%);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Text-to-Speech Buttons */
+.tts-container {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.tts-button {
+    background: #d16ba5;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    margin: 5px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.3s ease;
+}
+
+.tts-button:hover {
+    background: #c94b8a;
+}
+
+/* Ensure the textarea aligns properly within the container */
+.styled-textarea {
+    width: 100%; /* Make it take the full width of the container */
+    max-width: 100%; /* Prevent it from exceeding the container's width */
+    height: 500px; /* Increase height for better visibility */
+    background: #fffaf0; /* Light cream background for a warm feel */
+    border: 2px solid #f4c2c2; /* Soft pink border */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    font-family: 'Open Sans', sans-serif; /* Clean and readable font */
+    font-size: 1.4rem; /* Increase font size for better readability */
+    line-height: 1.8; /* Comfortable line spacing */
+    color: #333; /* Dark text for readability */
+    padding: 20px; /* Add more padding for better text spacing */
+    resize: none; /* Disable resizing */
+    outline: none; /* Remove focus outline */
+    overflow-y: auto; /* Enable scrolling if text overflows */
+    box-sizing: border-box; /* Include padding and border in width calculation */
+    margin: 15px 0; /* Add some spacing above and below the textarea */
+}
+
+/* Add a hover effect */
+.styled-textarea:hover {
+    border-color: #f08080; /* Slightly darker pink on hover */
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15); /* Enhance shadow on hover */
+}
+
+/* Add a focus effect */
+.styled-textarea:focus {
+    border-color: #f08080; /* Highlight border on focus */
+    box-shadow: 0 0 10px rgba(240, 128, 128, 0.5); /* Glow effect on focus */
+}
+
+/* Placeholder styling for better visibility */
+.styled-textarea::placeholder {
+    color: #aaa; /* Light gray placeholder text */
+    font-style: italic;
+}
