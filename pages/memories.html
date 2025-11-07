@@ -313,6 +313,19 @@
                 <span id="current-slide">1</span> / <span id="total-slides">10</span>
             </div>
 
+            <!-- Autoplay Controls -->
+            <div class="autoplay-controls" style="position:absolute; left:30px; top:20px; display:flex; gap:10px; align-items:center;">
+                <button id="autoplayToggle" class="px-4 py-2 bg-white/90 rounded">Autoplay ▶</button>
+                <label style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.9);padding:6px 8px;border-radius:8px;">Speed
+                    <select id="autoplaySpeed" style="margin-left:6px;padding:4px;border-radius:6px;">
+                        <option value="2000">2s</option>
+                        <option value="3000" selected>3s</option>
+                        <option value="5000">5s</option>
+                    </select>
+                </label>
+                <button id="downloadCurrent" class="px-3 py-2 bg-white/90 rounded">Download Current</button>
+            </div>
+
             <!-- Carousel Track -->
             <div class="carousel-track" id="carousel-track">
                 <!-- Slides will be dynamically inserted here -->
@@ -579,13 +592,62 @@
             setTimeout(() => heart.remove(), 8000);
         }
 
+        // Autoplay state
+        let autoplayEnabled = false;
+        let autoplayTimer = null;
+
+        function startAutoplay() {
+            stopAutoplay();
+            const speed = Number(document.getElementById('autoplaySpeed').value) || 3000;
+            autoplayTimer = setInterval(() => {
+                // If current slide is a video (has a video element) skip autoplay
+                const currentVideo = document.querySelectorAll('.carousel-slide')[currentIndex]?.querySelector('video');
+                if (currentVideo) return; // don't auto-advance while a video exists (user may want to play it)
+                navigate(1);
+            }, speed);
+        }
+
+        function stopAutoplay() {
+            if (autoplayTimer) { clearInterval(autoplayTimer); autoplayTimer = null; }
+        }
+
+        document.addEventListener('click', (e) => {
+            if (e.target && e.target.id === 'autoplayToggle') {
+                autoplayEnabled = !autoplayEnabled;
+                e.target.textContent = autoplayEnabled ? 'Autoplay ⏸' : 'Autoplay ▶';
+                if (autoplayEnabled) startAutoplay(); else stopAutoplay();
+            }
+        });
+
+        document.addEventListener('change', (e) => {
+            if (e.target && e.target.id === 'autoplaySpeed') {
+                if (autoplayEnabled) startAutoplay();
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            if (e.target && e.target.id === 'downloadCurrent') {
+                const mem = memories[currentIndex];
+                if (!mem) return alert('No media to download');
+                const a = document.createElement('a');
+                a.href = mem.src;
+                const parts = mem.src.split('/');
+                a.download = parts[parts.length-1] || 'memory';
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+            }
+        });
+
         // Initialize
         window.onload = () => {
             initCarousel();
-            
             // Create hearts periodically
             setInterval(createHeart, 800);
         };
     </script>
+    <script src="../js/music.js"></script>
+    <script src="../js/theme.js"></script>
+    <script src="../js/notes.js"></script>
 </body>
 </html>
