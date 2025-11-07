@@ -1,0 +1,12 @@
+{
+  "siteName": "Ayomide Anniversary",
+  "startDate": "2025-09-08",
+  "celebrationDate": "2025-11-08",
+  "months": 2,
+  "durationDays": 61,
+  "useSoundCloud": true,
+  "soundCloudTrackUrl": "https://api.soundcloud.com/tracks/2019893204",
+  "localAudioPath": "/audio/track.mp3",
+  "themeDefault": "light",
+  "secretNoteCode": "MIDELOVE"
+}
