@@ -3,6 +3,15 @@
     const STORAGE_KEY = 'loveNotesUnlocked';
     const unlocked = new Set(JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'));
 
+    async function loadConfig(){
+        if (window.SITE_CONFIG) return window.SITE_CONFIG;
+        try {
+            const res = await fetch('../site-config.json', {cache: 'no-store'});
+            if (res.ok) { window.SITE_CONFIG = await res.json(); return window.SITE_CONFIG; }
+        } catch(e) {}
+        return window.SITE_CONFIG || { secretNoteCode: 'MIDELOVE' };
+    }
+
     const NOTES = {
         first: { title: 'A Note for Us', body: "We kept showing up. That's how love grew — in the quiet, the intentional, the everyday." },
         distance: { title: 'Across Distance', body: "Those late night calls built a home for our hearts. Remember how we laughed until sunrise?" },
@@ -17,8 +26,10 @@
         if (document.getElementById('notesBtn')) return;
         const btn = document.createElement('button');
         btn.id = 'notesBtn';
-        btn.className = 'music-btn';
+        btn.className = 'music-btn notes-btn';
+        btn.style.position = 'fixed';
         btn.style.left = '30px';
+        btn.style.bottom = '30px';
         btn.title = 'Open Love Notes';
         btn.innerHTML = '💌';
         btn.addEventListener('click', openNotesModal);
@@ -76,10 +87,12 @@
         const close = document.createElement('button'); close.textContent = 'Close'; close.style.marginRight = '8px';
         close.addEventListener('click', () => document.getElementById('notesModal').style.display = 'none');
         const codeBtn = document.createElement('button'); codeBtn.textContent = 'Enter Secret Code';
-        codeBtn.addEventListener('click', () => {
+        codeBtn.addEventListener('click', async () => {
             const code = prompt('Enter the secret code:');
             if (!code) return;
-            if (code.trim().toUpperCase() === 'MIDELOVE') { unlock('secret'); alert('Secret note unlocked!'); renderModal(); }
+            const cfg = await loadConfig();
+            const correct = (cfg && cfg.secretNoteCode) ? String(cfg.secretNoteCode).trim().toUpperCase() : 'MIDELOVE';
+            if (code.trim().toUpperCase() === correct) { unlock('secret'); alert('Secret note unlocked!'); renderModal(); }
             else alert('Nope — try again.');
         });
         actions.appendChild(close); actions.appendChild(codeBtn);
@@ -87,7 +100,7 @@
     }
 
     // Auto-unlock logic: mark visits
-    window.addEventListener('load', () => {
+    window.addEventListener('load', async () => {
         createNotesButton();
         const path = window.location.pathname || '';
         if (path.endsWith('anniversary-landing.html')) unlock('first');

@@ -2,6 +2,15 @@
 (function(){
     const KEY = 'themePreference';
 
+    async function loadConfig(){
+        if (window.SITE_CONFIG) return window.SITE_CONFIG;
+        try {
+            const res = await fetch('../site-config.json', {cache: 'no-store'});
+            if (res.ok) { window.SITE_CONFIG = await res.json(); return window.SITE_CONFIG; }
+        } catch(e) {}
+        return window.SITE_CONFIG || { themeDefault: 'light' };
+    }
+
     function applyTheme(theme) {
         if (theme === 'dark') document.documentElement.setAttribute('data-theme','dark');
         else document.documentElement.removeAttribute('data-theme');
@@ -20,7 +29,16 @@
         btn.id = 'themeToggle';
         btn.title = 'Toggle dark mode';
         btn.className = 'music-btn';
-        btn.style.right = '110px';
+        btn.style.position = 'fixed';
+        btn.style.bottom = '30px';
+        btn.style.right = '100px';
+        btn.style.zIndex = '10000';
+        btn.style.width = '60px';
+        btn.style.height = '60px';
+        btn.style.borderRadius = '50%';
+        btn.style.display = 'flex';
+        btn.style.alignItems = 'center';
+        btn.style.justifyContent = 'center';
         btn.innerHTML = '🌓';
         btn.addEventListener('click', toggleTheme);
         document.body.appendChild(btn);
@@ -39,8 +57,9 @@
     document.head.appendChild(style);
 
     // Init
-    window.addEventListener('load', () => {
-        const t = localStorage.getItem(KEY) || 'light';
+    window.addEventListener('load', async () => {
+        const cfg = await loadConfig();
+        const t = localStorage.getItem(KEY) || (cfg && cfg.themeDefault) || 'light';
         applyTheme(t);
         createToggleButton();
     });
