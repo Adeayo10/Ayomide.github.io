@@ -172,11 +172,32 @@ All audio is generated using the **Web Audio API**:
 
 ## 💡 Customization Tips
 
-### Change Dates:
-Edit the timeline content in `timeline.html` and countdown start date in `countdown.html`:
-```javascript
-const anniversaryDate = new Date('2025-10-08T00:00:00').getTime();
+### Site configuration (easy month/year updates)
+Centralize date and feature toggles in `site-config.json` at the repository root. The shared scripts load this file automatically (via `js/config-loader.js`). Update the keys below to change the celebration date, start date, theme default, and audio settings without editing multiple pages.
+
+Example `site-config.json` schema:
+
+```json
+{
+    "siteName": "Ayomide Anniversary",
+    "startDate": "2025-09-08",
+    "celebrationDate": "2025-11-08",
+    "months": 2,
+    "durationDays": 61,
+    "useSoundCloud": true,
+    "soundCloudTrackUrl": "https://api.soundcloud.com/tracks/2019893204",
+    "localAudioPath": "/audio/track.mp3",
+    "themeDefault": "light",
+    "secretNoteCode": "MIDELOVE"
+}
 ```
+
+How it works:
+- Add or update `site-config.json` in the project root.
+- `js/config-loader.js` fetches it at runtime and exposes `window.SITE_CONFIG` and `window.SITE_CONFIG_READY` (a Promise).
+- Shared scripts (`js/music.js`, `js/theme.js`, `js/notes.js`) and pages read the config automatically, so you only need to update this file for month/year changes.
+
+If you prefer to hard-code dates in a single page (not recommended), update `pages/countdown.html`'s `anniversaryDate` value. Using `site-config.json` is the preferred, maintainable approach.
 
 ### Add More Promises:
 Edit the `promises` array in `promise-vault.html`:
