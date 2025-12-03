@@ -6,12 +6,14 @@
     <title>Our Love Story - Every Moment With You 💜</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:wght@400;700&family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
+    <script src="../js/config-loader.js"></script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
             background-attachment: fixed;
             overflow-x: hidden;
+            min-height: 100vh;
         }
         .title-font {
             font-family: 'Playfair Display', serif;
@@ -19,169 +21,7 @@
         .script-font {
             font-family: 'Dancing Script', cursive;
         }
-        .glass-card {
-            backdrop-filter: blur(16px) saturate(180%);
-            background: rgba(255, 255, 255, 0.95);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Carousel Container */
-        .carousel-container {
-            position: relative;
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            overflow: hidden;
-            border-radius: 20px;
-        }
-
-        /* Carousel Track */
-        .carousel-track {
-            display: flex;
-            transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-
-        /* Individual Slide */
-        .carousel-slide {
-            min-width: 100%;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 40px;
-        }
-
-        .memory-image-container {
-            position: relative;
-            width: 100%;
-            max-width: 800px;
-            height: 500px;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
-            margin-bottom: 30px;
-        }
-
-        .memory-image, .memory-video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s ease;
-        }
-
-        .memory-image-container:hover .memory-image,
-        .memory-image-container:hover .memory-video {
-            transform: scale(1.05);
-        }
-
-        .memory-caption {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 30px;
-            border-radius: 15px;
-            max-width: 700px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-            backdrop-filter: blur(10px);
-        }
-
-        .memory-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 28px;
-            font-weight: 700;
-            color: #764ba2;
-            margin-bottom: 15px;
-        }
-
-        .memory-story {
-            font-family: 'Inter', sans-serif;
-            font-size: 16px;
-            line-height: 1.8;
-            color: #444;
-            margin-bottom: 10px;
-        }
-
-        .memory-date {
-            font-family: 'Dancing Script', cursive;
-            font-size: 18px;
-            color: #667eea;
-            font-weight: 600;
-        }
-
-        /* Navigation Buttons */
-        .carousel-btn {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(255, 255, 255, 0.9);
-            border: none;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            font-size: 28px;
-            cursor: pointer;
-            z-index: 100;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #764ba2;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
-        }
-
-        .carousel-btn:hover {
-            background: white;
-            transform: translateY(-50%) scale(1.1);
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
-        }
-
-        .carousel-btn.prev {
-            left: 20px;
-        }
-
-        .carousel-btn.next {
-            right: 20px;
-        }
-
-        /* Progress Dots */
-        .carousel-dots {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            margin-top: 30px;
-        }
-
-        .dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.5);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .dot.active {
-            background: white;
-            width: 40px;
-            border-radius: 6px;
-        }
-
-        /* Progress Counter */
-        .progress-counter {
-            position: absolute;
-            top: 20px;
-            right: 30px;
-            background: rgba(255, 255, 255, 0.95);
-            padding: 12px 24px;
-            border-radius: 25px;
-            font-family: 'Inter', sans-serif;
-            font-weight: 600;
-            color: #764ba2;
-            z-index: 100;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-
+        
         /* Floating Hearts Animation */
         .floating-hearts {
             position: fixed;
@@ -202,17 +42,9 @@
         }
 
         @keyframes floatUp {
-            0% {
-                opacity: 0;
-                transform: translateY(0) scale(1);
-            }
-            50% {
-                opacity: 0.8;
-            }
-            100% {
-                opacity: 0;
-                transform: translateY(-1000px) scale(1.5);
-            }
+            0% { opacity: 0; transform: translateY(0) scale(1); }
+            50% { opacity: 0.8; }
+            100% { opacity: 0; transform: translateY(-1000px) scale(1.5); }
         }
 
         .fade-in {
@@ -224,69 +56,193 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Mobile Responsive */
-        @media (max-width: 768px) {
-            .memory-image-container {
-                height: 300px;
-            }
-
-            .memory-title {
-                font-size: 22px;
-            }
-
-            .memory-story {
-                font-size: 14px;
-            }
-
-            .carousel-btn {
-                width: 45px;
-                height: 45px;
-                font-size: 20px;
-            }
-
-            .carousel-btn.prev {
-                left: 10px;
-            }
-
-            .carousel-btn.next {
-                right: 10px;
-            }
-
-            .progress-counter {
-                top: 10px;
-                right: 10px;
-                padding: 8px 16px;
-                font-size: 12px;
-            }
+        /* Polaroid Gallery Grid */
+        .gallery-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            columns: 3 300px;
+            column-gap: 40px;
         }
 
-        /* Video Play Button */
-        .play-button {
+        .polaroid-card {
+            break-inside: avoid;
+            background: white;
+            padding: 15px 15px 40px 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            margin-bottom: 40px;
+            transform: rotate(var(--rotation));
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            position: relative;
+            border-radius: 2px;
+        }
+
+        .polaroid-card:hover {
+            transform: scale(1.05) rotate(0deg) !important;
+            z-index: 10;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .polaroid-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            filter: sepia(10%);
+            transition: filter 0.3s;
+        }
+
+        .polaroid-card:hover .polaroid-image {
+            filter: sepia(0%);
+        }
+
+        .polaroid-caption {
+            font-family: 'Dancing Script', cursive;
+            font-size: 24px;
+            color: #4a5568;
+            text-align: center;
+            margin-top: 20px;
+            line-height: 1.2;
+        }
+
+        .polaroid-date {
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            color: #a0aec0;
+            text-align: center;
+            margin-top: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .pin {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 40px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23e53e3e"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5" fill="%239b2c2c"/></svg>');
+            background-size: contain;
+            background-repeat: no-repeat;
+            z-index: 5;
+            filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.3));
+        }
+
+        /* Lightbox */
+        .lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 1000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            padding: 20px;
+        }
+
+        .lightbox.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .lightbox-content {
+            max-width: 1000px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        .lightbox-media-container {
+            max-height: 70vh;
+            width: auto;
+            max-width: 100%;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 50px rgba(255,255,255,0.1);
+        }
+
+        .lightbox-media {
+            max-height: 70vh;
+            max-width: 100%;
+            object-fit: contain;
+        }
+
+        .lightbox-details {
+            color: white;
+            text-align: center;
+            margin-top: 20px;
+            max-width: 600px;
+        }
+
+        .lightbox-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .lightbox-story {
+            font-size: 16px;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            color: white;
+            font-size: 40px;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+
+        .lightbox-nav {
             position: absolute;
             top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 80px;
-            height: 80px;
-            background: rgba(255, 255, 255, 0.9);
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 36px;
-            color: #764ba2;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            z-index: 10;
+            transition: background 0.3s;
         }
 
-        .play-button:hover {
-            transform: translate(-50%, -50%) scale(1.1);
-            background: white;
+        .lightbox-nav:hover {
+            background: rgba(255,255,255,0.3);
         }
 
-        .video-playing .play-button {
-            display: none;
+        .lightbox-prev { left: -60px; }
+        .lightbox-next { right: -60px; }
+
+        @media (max-width: 768px) {
+            .gallery-container {
+                columns: 1;
+            }
+            .lightbox-nav {
+                position: fixed;
+                bottom: 20px;
+                top: auto;
+                transform: none;
+            }
+            .lightbox-prev { left: 20px; }
+            .lightbox-next { right: 20px; }
+            .lightbox-close { top: 10px; right: 10px; position: fixed; }
         }
     </style>
 </head>
@@ -295,73 +251,64 @@
     <div class="floating-hearts" id="hearts-container"></div>
 
     <!-- Main Container -->
-    <div class="min-h-screen py-12 px-4 relative z-10">
+    <div class="relative z-10 pb-20">
         <!-- Header -->
-        <div class="text-center mb-12 fade-in">
-            <h1 class="text-5xl md:text-6xl font-bold title-font text-white mb-4">
-                Our Love Story 💜
+        <div class="text-center py-16 fade-in px-4">
+            <h1 class="text-5xl md:text-7xl font-bold title-font text-white mb-4 drop-shadow-lg">
+                Our Memory Wall 📸
             </h1>
-            <p class="text-xl md:text-2xl script-font text-white opacity-90">
-                Every moment with you is a memory I treasure forever
+            <p class="text-xl md:text-2xl script-font text-white opacity-90 drop-shadow-md">
+                Snapshots of a love that grows stronger every day
             </p>
         </div>
 
-        <!-- Carousel Container -->
-        <div class="carousel-container glass-card p-8 mb-8">
-            <!-- Progress Counter -->
-            <div class="progress-counter">
-                <span id="current-slide">1</span> / <span id="total-slides">10</span>
-            </div>
-
-            <!-- Autoplay Controls -->
-            <div class="autoplay-controls" style="position:absolute; left:30px; top:20px; display:flex; gap:10px; align-items:center;">
-                <button id="autoplayToggle" class="px-4 py-2 bg-white/90 rounded">Autoplay ▶</button>
-                <label style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.9);padding:6px 8px;border-radius:8px;">Speed
-                    <select id="autoplaySpeed" style="margin-left:6px;padding:4px;border-radius:6px;">
-                        <option value="2000">2s</option>
-                        <option value="3000" selected>3s</option>
-                        <option value="5000">5s</option>
-                    </select>
-                </label>
-                <button id="downloadCurrent" class="px-3 py-2 bg-white/90 rounded">Download Current</button>
-            </div>
-
-            <!-- Carousel Track -->
-            <div class="carousel-track" id="carousel-track">
-                <!-- Slides will be dynamically inserted here -->
-            </div>
-
-            <!-- Navigation Buttons -->
-            <button class="carousel-btn prev" onclick="navigate(-1)">‹</button>
-            <button class="carousel-btn next" onclick="navigate(1)">›</button>
+        <!-- Gallery Grid -->
+        <div class="gallery-container" id="gallery">
+            <!-- Items injected by JS -->
         </div>
 
-        <!-- Progress Dots -->
-        <div class="carousel-dots" id="carousel-dots"></div>
-
         <!-- Footer -->
-        <div class="text-center mt-12">
-            <div class="glass-card max-w-2xl mx-auto p-8 mb-6">
-                <p class="text-xl text-gray-700 italic mb-3">
-                    "Every moment was written in the stars, but we chose to make it real."
+        <div class="text-center mt-12 px-4">
+            <div class="glass-card max-w-2xl mx-auto p-8 mb-6 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20">
+                <p class="text-xl text-white italic mb-3">
+                    "Every picture tells a story, but ours is my favorite."
                 </p>
-                <p class="text-gray-600 mb-2">
-                    Happy Two-Month Anniversary, My Love 💜
-                </p>
-                <p class="text-sm text-gray-500">
-                    Made with intentional love • November 8, 2025
+                <p class="text-white/80 mb-2">
+                    Happy <span data-config-text="anniversaryText">Three-Month</span> Anniversary, My Love 💜
                 </p>
             </div>
             
-            <a href="anniversary-landing.html" 
+            <a href="../index.html" 
                class="inline-block px-8 py-4 bg-white text-purple-600 rounded-full font-semibold text-lg hover:bg-purple-50 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105">
                 ← Back to Home
             </a>
         </div>
     </div>
 
+    <!-- Lightbox Modal -->
+    <div class="lightbox" id="lightbox">
+        <div class="lightbox-content">
+            <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+            
+            <div class="lightbox-media-container">
+                <!-- Media injected here -->
+                <img src="" class="lightbox-media" id="lightbox-img">
+                <video src="" class="lightbox-media" id="lightbox-video" controls style="display:none"></video>
+            </div>
+
+            <div class="lightbox-details">
+                <h2 class="lightbox-title" id="lightbox-title">Title</h2>
+                <p class="lightbox-story" id="lightbox-story">Story goes here...</p>
+                <p class="text-sm mt-4 opacity-70" id="lightbox-date">Date</p>
+            </div>
+
+            <button class="lightbox-nav lightbox-prev" onclick="changeSlide(-1)">❮</button>
+            <button class="lightbox-nav lightbox-next" onclick="changeSlide(1)">❯</button>
+        </div>
+    </div>
+
     <script>
-        // Memory Data with Stories
+        // Memory Data
         const memories = [
             {
                 type: 'image',
@@ -431,152 +378,108 @@
                 src: '../img/IMG-20250914-WA0038.jpg',
                 date: 'September 14, 2025',
                 title: 'Forever Starts Now',
-                story: 'This is just the beginning, my love. Two months down, a lifetime to go. Every photo, every video, every moment we share is another chapter in our story. And I can\'t wait to write them all with you. I love you, Ayomide. Always. - Your LumLum 💜'
+                story: 'This is just the beginning, my love. {{anniversaryDurationText}} down, a lifetime to go. Every photo, every video, every moment we share is another chapter in our story. And I can\'t wait to write them all with you. I love you, Ayomide. Always. - Your LumLum 💜'
             }
         ];
 
-        let currentIndex = 0;
+        let currentLightboxIndex = 0;
 
-        // Initialize Carousel
-        function initCarousel() {
-            const track = document.getElementById('carousel-track');
-            const dotsContainer = document.getElementById('carousel-dots');
-            const totalSlides = document.getElementById('total-slides');
+        async function initGallery() {
+            const cfg = await window.SITE_CONFIG_READY;
+            const durationText = cfg?.anniversaryDurationText || 'Three months';
 
-            totalSlides.textContent = memories.length;
+            const gallery = document.getElementById('gallery');
+            
+            memories.forEach((mem, index) => {
+                // Dynamic Text Replacement
+                if (mem.story) mem.story = mem.story.replace('{{anniversaryDurationText}}', durationText);
 
-            // Create slides
-            memories.forEach((memory, index) => {
-                const slide = document.createElement('div');
-                slide.className = 'carousel-slide';
+                const card = document.createElement('div');
+                card.className = 'polaroid-card fade-in';
+                card.style.animationDelay = (index * 0.1) + 's';
+                
+                // Random rotation between -3 and 3 degrees
+                const rotation = Math.random() * 6 - 3;
+                card.style.setProperty('--rotation', rotation + 'deg');
+                
+                card.onclick = () => openLightbox(index);
 
-                if (memory.type === 'image') {
-                    slide.innerHTML = `
-                        <div class="memory-image-container">
-                            <img src="${memory.src}" alt="${memory.title}" class="memory-image">
-                        </div>
-                        <div class="memory-caption">
-                            <h2 class="memory-title">${memory.title}</h2>
-                            <p class="memory-story">${memory.story}</p>
-                            <p class="memory-date">${memory.date}</p>
-                        </div>
-                    `;
+                let mediaHtml = '';
+                if (mem.type === 'image') {
+                    mediaHtml = `<img src="${mem.src}" class="polaroid-image" alt="${mem.title}">`;
                 } else {
-                    slide.innerHTML = `
-                        <div class="memory-image-container" id="video-container-${index}">
-                            <video class="memory-video" id="video-${index}" preload="metadata">
-                                <source src="${memory.src}" type="video/mp4">
-                            </video>
-                            <div class="play-button" onclick="playVideo(${index})">▶</div>
-                        </div>
-                        <div class="memory-caption">
-                            <h2 class="memory-title">${memory.title}</h2>
-                            <p class="memory-story">${memory.story}</p>
-                            <p class="memory-date">${memory.date}</p>
+                    mediaHtml = `
+                        <div style="position:relative">
+                            <video src="${mem.src}" class="polaroid-image" style="object-fit:cover; height:250px;"></video>
+                            <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size:40px; color:white; text-shadow:0 2px 4px rgba(0,0,0,0.5);">▶</div>
                         </div>
                     `;
                 }
 
-                track.appendChild(slide);
+                card.innerHTML = `
+                    <div class="pin"></div>
+                    ${mediaHtml}
+                    <div class="polaroid-caption">${mem.title}</div>
+                    <div class="polaroid-date">${mem.date}</div>
+                `;
 
-                // Create dot
-                const dot = document.createElement('div');
-                dot.className = 'dot';
-                if (index === 0) dot.classList.add('active');
-                dot.onclick = () => goToSlide(index);
-                dotsContainer.appendChild(dot);
-            });
-
-            updateSlide();
-        }
-
-        // Navigate Carousel
-        function navigate(direction) {
-            currentIndex += direction;
-
-            if (currentIndex < 0) {
-                currentIndex = memories.length - 1;
-            } else if (currentIndex >= memories.length) {
-                currentIndex = 0;
-            }
-
-            updateSlide();
-        }
-
-        // Go to Specific Slide
-        function goToSlide(index) {
-            currentIndex = index;
-            updateSlide();
-        }
-
-        // Update Slide Display
-        function updateSlide() {
-            const track = document.getElementById('carousel-track');
-            const dots = document.querySelectorAll('.dot');
-            const currentSlideDisplay = document.getElementById('current-slide');
-
-            track.style.transform = `translateX(-${currentIndex * 100}%)`;
-            currentSlideDisplay.textContent = currentIndex + 1;
-
-            // Update dots
-            dots.forEach((dot, index) => {
-                dot.classList.toggle('active', index === currentIndex);
-            });
-
-            // Pause all videos
-            document.querySelectorAll('video').forEach(video => {
-                video.pause();
-                video.currentTime = 0;
-            });
-            document.querySelectorAll('.play-button').forEach(btn => {
-                btn.style.display = 'flex';
+                gallery.appendChild(card);
             });
         }
 
-        // Play Video
-        function playVideo(index) {
-            const video = document.getElementById(`video-${index}`);
-            const container = document.getElementById(`video-container-${index}`);
-            const playButton = container.querySelector('.play-button');
+        function openLightbox(index) {
+            currentLightboxIndex = index;
+            updateLightbox();
+            document.getElementById('lightbox').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
 
-            if (video.paused) {
-                video.play();
-                playButton.style.display = 'none';
-                container.classList.add('video-playing');
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('active');
+            document.body.style.overflow = 'auto';
+            // Stop video
+            const v = document.getElementById('lightbox-video');
+            v.pause();
+        }
+
+        function changeSlide(dir) {
+            currentLightboxIndex += dir;
+            if (currentLightboxIndex >= memories.length) currentLightboxIndex = 0;
+            if (currentLightboxIndex < 0) currentLightboxIndex = memories.length - 1;
+            updateLightbox();
+        }
+
+        function updateLightbox() {
+            const mem = memories[currentLightboxIndex];
+            const img = document.getElementById('lightbox-img');
+            const vid = document.getElementById('lightbox-video');
+            
+            // Reset
+            img.style.display = 'none';
+            vid.style.display = 'none';
+            vid.pause();
+
+            if (mem.type === 'image') {
+                img.src = mem.src;
+                img.style.display = 'block';
             } else {
-                video.pause();
-                playButton.style.display = 'flex';
-                container.classList.remove('video-playing');
+                vid.src = mem.src;
+                vid.style.display = 'block';
+                vid.play();
             }
+
+            document.getElementById('lightbox-title').textContent = mem.title;
+            document.getElementById('lightbox-story').textContent = mem.story;
+            document.getElementById('lightbox-date').textContent = mem.date;
         }
 
-        // Keyboard Navigation
+        // Keyboard nav
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowLeft') navigate(-1);
-            if (e.key === 'ArrowRight') navigate(1);
+            if (!document.getElementById('lightbox').classList.contains('active')) return;
+            if (e.key === 'Escape') closeLightbox();
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
         });
-
-        // Touch Swipe Support
-        let touchStartX = 0;
-        let touchEndX = 0;
-
-        document.addEventListener('touchstart', (e) => {
-            touchStartX = e.changedTouches[0].screenX;
-        });
-
-        document.addEventListener('touchend', (e) => {
-            touchEndX = e.changedTouches[0].screenX;
-            handleSwipe();
-        });
-
-        function handleSwipe() {
-            if (touchStartX - touchEndX > 50) {
-                navigate(1); // Swipe left
-            }
-            if (touchEndX - touchStartX > 50) {
-                navigate(-1); // Swipe right
-            }
-        }
 
         // Floating Hearts
         function createHeart() {
@@ -586,67 +489,15 @@
             heart.style.left = Math.random() * 100 + '%';
             heart.style.animationDuration = (Math.random() * 3 + 4) + 's';
             heart.style.animationDelay = Math.random() * 2 + 's';
-            
             document.getElementById('hearts-container').appendChild(heart);
-            
             setTimeout(() => heart.remove(), 8000);
         }
 
-        // Autoplay state
-        let autoplayEnabled = false;
-        let autoplayTimer = null;
-
-        function startAutoplay() {
-            stopAutoplay();
-            const speed = Number(document.getElementById('autoplaySpeed').value) || 3000;
-            autoplayTimer = setInterval(() => {
-                // If current slide is a video (has a video element) skip autoplay
-                const currentVideo = document.querySelectorAll('.carousel-slide')[currentIndex]?.querySelector('video');
-                if (currentVideo) return; // don't auto-advance while a video exists (user may want to play it)
-                navigate(1);
-            }, speed);
-        }
-
-        function stopAutoplay() {
-            if (autoplayTimer) { clearInterval(autoplayTimer); autoplayTimer = null; }
-        }
-
-        document.addEventListener('click', (e) => {
-            if (e.target && e.target.id === 'autoplayToggle') {
-                autoplayEnabled = !autoplayEnabled;
-                e.target.textContent = autoplayEnabled ? 'Autoplay ⏸' : 'Autoplay ▶';
-                if (autoplayEnabled) startAutoplay(); else stopAutoplay();
-            }
-        });
-
-        document.addEventListener('change', (e) => {
-            if (e.target && e.target.id === 'autoplaySpeed') {
-                if (autoplayEnabled) startAutoplay();
-            }
-        });
-
-        document.addEventListener('click', (e) => {
-            if (e.target && e.target.id === 'downloadCurrent') {
-                const mem = memories[currentIndex];
-                if (!mem) return alert('No media to download');
-                const a = document.createElement('a');
-                a.href = mem.src;
-                const parts = mem.src.split('/');
-                a.download = parts[parts.length-1] || 'memory';
-                document.body.appendChild(a);
-                a.click();
-                a.remove();
-            }
-        });
-
-        // Initialize
         window.onload = () => {
-            initCarousel();
-            // Create hearts periodically
+            initGallery();
             setInterval(createHeart, 800);
         };
     </script>
-    <script src="../js/config-loader.js"></script>
     <script src="../js/confetti.js"></script>
     <script src="../js/music.js"></script>
     <script src="../js/theme.js"></script>

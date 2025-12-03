@@ -1,53 +1,576 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Happy Anniversary, Ayomide 💜</title>
-    <meta http-equiv="refresh" content="0; url=pages/anniversary-landing.html">
-    <script>
-        window.location.href = "pages/anniversary-landing.html";
-    </script>
+    <title>Happy Three-Month Anniversary, Ayomide 💜</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:wght@400;700&family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- SoundCloud Widget API -->
+    <script src="https://w.soundcloud.com/player/api.js"></script>
+    
     <style>
+        html {
+            scroll-behavior: smooth;
+            scroll-snap-type: y mandatory;
+        }
         body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
             margin: 0;
             padding: 0;
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+        }
+        section {
+            scroll-snap-align: start;
+            scroll-snap-stop: always;
+            min-height: 100vh;
             display: flex;
+            flex-direction: column;
             justify-content: center;
-            align-items: center;
-            height: 100vh;
-            text-align: center;
-            overflow: hidden;
+            position: relative;
         }
-        .redirect-message {
-            padding: 40px;
-            background: rgba(255, 255, 255, 0.1);
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .title-font {
+            font-family: 'Playfair Display', serif;
+        }
+        .script-font {
+            font-family: 'Dancing Script', cursive;
+        }
+        .glass-card {
+            backdrop-filter: blur(16px) saturate(180%);
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .experience-card {
             backdrop-filter: blur(10px);
-            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
         }
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
+        .experience-card:hover {
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+            background: rgba(255, 255, 255, 0.98);
         }
-        p {
-            font-size: 1.2rem;
+        .floating-hearts {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 0;
         }
-        a {
-            color: #fff;
-            text-decoration: underline;
-            font-weight: bold;
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            opacity: 0;
+            animation: floatHeart 8s ease-in-out infinite;
+        }
+        @keyframes floatHeart {
+            0% {
+                opacity: 0;
+                transform: translateY(100vh) rotate(0deg);
+            }
+            10% {
+                opacity: 0.8;
+            }
+            90% {
+                opacity: 0.8;
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-100vh) rotate(360deg);
+            }
+        }
+        .fade-in {
+            animation: fadeIn 1.5s ease-out;
+        }
+        .fade-in-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 1s ease-out, transform 1s ease-out;
+        }
+        .fade-in-scroll.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .music-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            background: rgba(147, 51, 234, 0.9);
+            transition: all 0.3s ease;
+        }
+        .music-btn:hover {
+            transform: scale(1.1) rotate(5deg);
+            background: rgba(147, 51, 234, 1);
+        }
+        .pulse-ring {
+            animation: pulseRing 2s ease-out infinite;
+        }
+        @keyframes pulseRing {
+            0% {
+                box-shadow: 0 0 0 0 rgba(147, 51, 234, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 20px rgba(147, 51, 234, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(147, 51, 234, 0);
+            }
         }
     </style>
 </head>
-<body>
-    <div class="redirect-message">
-        <h1>💜 Redirecting...</h1>
-        <p>Taking you to your anniversary experience.</p>
-        <p>If you're not redirected, <a href="pages/anniversary-landing.html">click here</a>.</p>
+<body class="overflow-x-hidden">
+    <!-- Floating Hearts Background -->
+    <div class="floating-hearts" id="heartsContainer"></div>
+
+    <!-- Hero Section -->
+    <section id="hero" class="min-h-screen flex flex-col justify-center items-center relative px-4 py-12">
+        <div class="glass-card rounded-3xl shadow-2xl p-8 md:p-12 text-center fade-in max-w-4xl w-full relative z-10">
+            <div class="text-7xl md:text-8xl mb-6">💖</div>
+            <h1 class="title-font text-5xl md:text-7xl font-bold text-gray-800 mb-4">
+                Happy <span data-config-text="anniversaryText">Three-Month</span> Anniversary
+            </h1>
+            <p class="script-font text-4xl md:text-5xl text-purple-700 mb-6">
+                My Dearest Ayomide
+            </p>
+            <div class="w-24 h-1 bg-gradient-to-r from-purple-500 to-pink-500 mx-auto mb-6"></div>
+            <p class="text-xl md:text-2xl text-gray-700 leading-relaxed max-w-3xl mx-auto">
+                <span data-config-text="anniversaryDurationText">Three months</span> ago, we chose each other. Not by accident, not by chance, but by 
+                <span class="font-bold text-purple-700">intentional design</span>. 
+                Today, I celebrate you — my Firelighter, my steady part, my vision.
+            </p>
+            <p class="text-lg text-gray-600 mt-6 italic">
+                I've created three special experiences for you. Choose your journey below. 💜
+            </p>
+        </div>
+        
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-8 animate-bounce cursor-pointer z-20" onclick="document.getElementById('story').scrollIntoView({behavior: 'smooth'})">
+            <svg class="w-10 h-10 text-white drop-shadow-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7-7-7"></path>
+            </svg>
+        </div>
+    </section>
+
+    <!-- Monthly Themes Section -->
+    <section id="story" class="min-h-screen flex flex-col justify-center py-20 px-4 relative z-10">
+        <div class="max-w-6xl mx-auto w-full">
+            <h2 class="text-center title-font text-3xl text-white mb-8 drop-shadow-md fade-in-scroll">The Story of Us</h2>
+            <div class="grid md:grid-cols-3 gap-6">
+                <!-- Month 1 -->
+                <div class="glass-card rounded-2xl p-6 text-center transform hover:scale-105 transition-transform fade-in-scroll" style="transition-delay: 100ms;">
+                    <div class="text-4xl mb-2">🌱</div>
+                    <h3 class="font-bold text-purple-800 text-xl mb-1">Month 1</h3>
+                    <p class="text-xs text-purple-600 font-semibold mb-2 uppercase tracking-wider" data-config-text="themeDates.month1">October 2025</p>
+                    <p class="text-2xl font-serif text-gray-800" data-config-text="themes.month1">Intentionality</p>
+                    <p class="text-sm text-gray-500 mt-2">The Choice</p>
+                </div>
+                <!-- Month 2 -->
+                <div class="glass-card rounded-2xl p-6 text-center transform hover:scale-105 transition-transform fade-in-scroll" style="transition-delay: 300ms;">
+                    <div class="text-4xl mb-2">🧱</div>
+                    <h3 class="font-bold text-purple-800 text-xl mb-1">Month 2</h3>
+                    <p class="text-xs text-purple-600 font-semibold mb-2 uppercase tracking-wider" data-config-text="themeDates.month2">November 2025</p>
+                    <p class="text-2xl font-serif text-gray-800" data-config-text="themes.month2">Consistency</p>
+                    <p class="text-sm text-gray-500 mt-2">The Foundation</p>
+                </div>
+                <!-- Month 3 -->
+                <div class="glass-card rounded-2xl p-6 text-center transform scale-110 border-2 border-purple-400 shadow-2xl relative fade-in-scroll group cursor-pointer" style="transition-delay: 500ms;">
+                    <div class="absolute -top-3 -right-3 bg-purple-600 text-white text-xs font-bold px-3 py-1 rounded-full animate-bounce">NOW</div>
+                    <div class="text-4xl mb-2">🏡</div>
+                    <h3 class="font-bold text-purple-800 text-xl mb-1">Month 3</h3>
+                    <p class="text-xs text-purple-600 font-semibold mb-2 uppercase tracking-wider" data-config-text="themeDates.month3">December 2025</p>
+                    <p class="text-2xl font-serif text-gray-800" data-config-text="themes.month3">Comfort</p>
+                    <p class="text-sm text-gray-500 mt-2">The Home</p>
+                    
+                    <!-- Popover -->
+                    <div class="absolute inset-0 bg-white/95 backdrop-blur-md rounded-2xl flex flex-col items-center justify-center p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+                        <p class="text-purple-800 font-bold text-lg mb-2">That's all for Month 3!</p>
+                        <p class="text-gray-600 italic">See you in Month 4 👋🏾</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Experience Section -->
+    <section id="experiences" class="min-h-screen flex flex-col justify-center py-20 px-4 relative z-10">
+        <div class="max-w-6xl mx-auto w-full">
+            <!-- Experience Cards Grid -->
+            <div class="grid md:grid-cols-3 gap-8 mb-12">
+            <!-- Promise Vault Card -->
+            <a href="pages/promise-vault.html" class="experience-card rounded-2xl shadow-xl p-8 text-center fade-in-scroll" style="transition-delay: 100ms;">
+                <div class="text-6xl mb-4">🔒</div>
+                <h3 class="title-font text-2xl font-bold text-gray-800 mb-3">
+                    The Promise Vault
+                </h3>
+                <p class="text-gray-600 mb-4 leading-relaxed">
+                    Unlock 25+ heartfelt promises I've made just for you. Each click reveals another piece of my commitment.
+                </p>
+                <div class="inline-flex items-center text-purple-600 font-semibold">
+                    <span>Open Vault</span>
+                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </div>
+            </a>
+
+            <!-- Timeline Card -->
+            <a href="pages/timeline.html" class="experience-card rounded-2xl shadow-xl p-8 text-center fade-in-scroll" style="transition-delay: 200ms;">
+                <div class="text-6xl mb-4">📅</div>
+                <h3 class="title-font text-2xl font-bold text-gray-800 mb-3">
+                    Our Destiny Timeline
+                </h3>
+                <p class="text-gray-600 mb-4 leading-relaxed">
+                    Walk through our journey from the first message to forever. Every moment was intentional.
+                </p>
+                <div class="inline-flex items-center text-purple-600 font-semibold">
+                    <span>View Timeline</span>
+                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </div>
+            </a>
+
+            <!-- Countdown Card -->
+            <a href="pages/countdown.html" class="experience-card rounded-2xl shadow-xl p-8 text-center fade-in-scroll" style="transition-delay: 300ms;">
+                <div class="text-6xl mb-4">⏰</div>
+                <h3 class="title-font text-2xl font-bold text-gray-800 mb-3">
+                    Counting Every Moment
+                </h3>
+                <p class="text-gray-600 mb-4 leading-relaxed">
+                    Watch the seconds, minutes, and days grow. Our love isn't measured, but this proves it's endless.
+                </p>
+                <div class="inline-flex items-center text-purple-600 font-semibold">
+                    <span>See Counter</span>
+                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </div>
+            </a>
+        </div>
+
+        <!-- Experience Cards Grid - Row 2 (Memories & Quiz) -->
+        <div class="grid md:grid-cols-2 gap-8 mb-12">
+            <a href="pages/memories.html" class="experience-card rounded-2xl shadow-xl p-8 text-center fade-in-scroll" style="transition-delay: 400ms;">
+                <div class="text-6xl mb-4">📸</div>
+                <h3 class="title-font text-2xl font-bold text-gray-800 mb-3">
+                    Our Memories Together
+                </h3>
+                <p class="text-gray-600 mb-4 leading-relaxed">
+                    Every photo, every video — a testament to the moments we've shared and the love we're building.
+                </p>
+                <div class="inline-flex items-center text-purple-600 font-semibold">
+                    <span>View Our Gallery</span>
+                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </div>
+            </a>
+
+            <a href="pages/love-quiz.html" class="experience-card rounded-2xl shadow-xl p-8 text-center fade-in-scroll" style="transition-delay: 500ms;">
+                <div class="text-6xl mb-4">🎮</div>
+                <h3 class="title-font text-2xl font-bold text-gray-800 mb-3">
+                    How Well Do You Know Us?
+                </h3>
+                <p class="text-gray-600 mb-4 leading-relaxed">
+                    Take our interactive love quiz! Test your knowledge of our relationship and see if you remember every detail.
+                </p>
+                <div class="inline-flex items-center text-purple-600 font-semibold">
+                    <span>Play Quiz</span>
+                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </div>
+            </a>
+
+            <!-- Open When Letters -->
+            <a href="pages/open-when.html" class="experience-card rounded-2xl shadow-xl p-8 text-center fade-in-scroll" style="transition-delay: 600ms;">
+                <div class="text-6xl mb-4">💌</div>
+                <h3 class="title-font text-2xl font-bold text-gray-800 mb-3">
+                    Open When...
+                </h3>
+                <p class="text-gray-600 mb-4 leading-relaxed">
+                    Letters written for every mood and moment. Read them when you need me most.
+                </p>
+                <div class="inline-flex items-center text-purple-600 font-semibold">
+                    <span>Read Letters</span>
+                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </div>
+            </a>
+
+            <!-- Crossword Puzzle -->
+            <a href="pages/crossword.html" class="experience-card rounded-2xl shadow-xl p-8 text-center fade-in-scroll" style="transition-delay: 700ms;">
+                <div class="text-6xl mb-4">🧩</div>
+                <h3 class="title-font text-2xl font-bold text-gray-800 mb-3">
+                    Love Crossword
+                </h3>
+                <p class="text-gray-600 mb-4 leading-relaxed">
+                    Solve the puzzle of our love story. Hints only you would know!
+                </p>
+                <div class="inline-flex items-center text-purple-600 font-semibold">
+                    <span>Solve Puzzle</span>
+                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <!-- Personal Message Section -->
+    <section id="message" class="min-h-screen flex flex-col justify-center py-20 px-4 relative z-10">
+        <div class="max-w-4xl mx-auto w-full">
+            <!-- Personal Message Card -->
+            <div class="glass-card rounded-3xl shadow-2xl p-8 md:p-12 fade-in-scroll opacity-0 translate-y-8 transition-all duration-1000 ease-out">
+            <h2 class="title-font text-3xl md:text-4xl font-bold text-center text-gray-800 mb-6">
+                My Dearest Ayomide (Oluwasetemi)
+            </h2>
+            
+            <div class="w-24 h-1 bg-gradient-to-r from-purple-500 to-pink-500 mx-auto mb-8"></div>
+            
+            <div class="max-w-4xl mx-auto text-gray-700 space-y-6 text-lg leading-relaxed">
+                <p>
+                    I just finished reading your email again, and it truly is the most beautiful gift. Thank you for making our 
+                    <span class="font-bold text-purple-700">two-month anniversary</span> feel like a milestone that was written in the stars.
+                </p>
+
+                <h3 class="title-font text-2xl font-bold text-purple-700 mt-8 mb-4">On Knowing You</h3>
+                <p>
+                    You said it perfectly: it feels like we've known each other for much longer. That's because you are my 
+                    <span class="font-bold text-purple-700">OLUWASETEMI</span>—the one chosen by God for me. Every moment, every conversation, 
+                    confirms that we chose each other, intentionally and perfectly.
+                </p>
+                <p>
+                    I honestly don't know how to explain the quiet certainty I feel when I'm with you, or even just thinking about you. 
+                    You are my <span class="font-bold text-purple-700">steady part</span>, my calm in every storm.
+                </p>
+                <p>
+                    And please, my love, never worry about asking too many questions. Your curiosity isn't a bother; it's proof that I have someone 
+                    who truly wants to <span class="font-bold">know me</span>—not just what I do, but who I am. You remind me that I don't have to 
+                    carry things alone, and I promise to be better about sharing those small, silly moments with you. I love being your 
+                    <span class="font-bold text-pink-600">Lumlum</span>, and I love being fully seen by you.
+                </p>
+
+                <h3 class="title-font text-2xl font-bold text-purple-700 mt-8 mb-4">On Your Faith and Support</h3>
+                <p>
+                    Thank you for seeing the hard work, the heaviness of the job search, and for not letting me feel forgotten. Your words—
+                    <em>"You are doing so well, baby. You're not behind. You're not forgotten"</em>—are a powerful shield against all the doubt.
+                </p>
+                <p>
+                    Knowing that you, my <span class="font-bold text-purple-700">Oluwasetemi</span>, my overall best, are proud of me, gives me 
+                    the strength I need to keep pushing. You are my <span class="font-bold text-purple-700">Firelighter</span>, and your belief 
+                    is the fuel I carry into every interview.
+                </p>
+
+                <h3 class="title-font text-2xl font-bold text-purple-700 mt-8 mb-4">Here's to Us</h3>
+                <p>
+                    You are brilliant, gifted, and full of grace, and you light up my life, which makes me the luckiest man. Thank you for being 
+                    my person, for your heart, and for showing me what genuine, intentional love feels like.
+                </p>
+                <p>
+                    Two months is just the beginning of our story, and I am already so excited for the countless months of adventures, stories, 
+                    and moments we will share. I cannot wait to hold you and whisper exactly how proud I am of the woman you are.
+                </p>
+                <p class="text-xl font-semibold text-purple-700 mt-8">
+                    I'm taking your confidence with me right now. I'm going to <span class="font-bold">smash it</span> for us.
+                </p>
+                <p class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 mt-6">
+                    I love you, endlessly and always.
+                </p>
+            </div>
+
+            <div class="w-32 h-1 bg-gradient-to-r from-purple-500 to-pink-500 mx-auto my-8"></div>
+            
+            <div class="text-center">
+                <p class="script-font text-2xl text-gray-700 mb-2">
+                    Happy Two-Month Anniversary, my Odunayo 💜
+                </p>
+                <p class="script-font text-3xl text-gray-700 mb-2">
+                    With all my heart,
+                </p>
+                <p class="script-font text-4xl text-purple-700 mt-2">
+                    Your LumLum
+                </p>
+                
+                <div class="mt-12 pt-8 border-t border-gray-300">
+                    <p class="text-lg text-gray-600 italic mb-3">
+                        "Every moment was written in the stars, but we chose to make it real."
+                    </p>
+                    <p class="text-sm text-gray-500">
+                        Made with intentional love • <span data-config-text="footerDate">December 8, 2025</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+        </div>
+    </section>
+
+    <!-- SoundCloud Player (Hidden but functional) -->
+    <iframe id="soundcloud-widget" width="100%" height="0" scrolling="no" frameborder="no" allow="autoplay"
+            src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/2019893204&color=%23ff5500&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false&visual=false"
+            style="display: none;">
+    </iframe>
+
+    <!-- Music Control Button -->
+    <button id="musicBtn" class="music-btn w-16 h-16 rounded-full flex items-center justify-center shadow-2xl pulse-ring" title="Click to Play Music 🎵">
+        <svg id="playIcon" class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M8 5v14l11-7z"/>
+        </svg>
+        <svg id="pauseIcon" class="w-8 h-8 text-white hidden" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
+        </svg>
+    </button>
+
+    <!-- Play Music Prompt -->
+    <div id="music-prompt" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 bg-white rounded-3xl shadow-2xl p-8 text-center" style="backdrop-filter: blur(10px);">
+        <div class="text-6xl mb-4">🎵</div>
+        <h3 class="text-2xl font-bold text-gray-800 mb-3">Play Our Song?</h3>
+        <p class="text-gray-600 mb-6">Spyro - Beautiful</p>
+        <button onclick="startMusic()" class="px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-full font-semibold hover:shadow-xl transition-all duration-300 hover:scale-105">
+            ▶ Play Music
+        </button>
+        <br>
+        <button onclick="closePrompt()" class="mt-3 text-gray-500 hover:text-gray-700 text-sm">
+            Maybe later
+        </button>
     </div>
+
+    <script>
+        // Floating Hearts Animation
+        const heartsContainer = document.getElementById('heartsContainer');
+        const heartEmojis = ['💜', '💖', '💝', '💗', '💓', '💕', '💞'];
+        
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.textContent = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
+            heart.style.left = Math.random() * 100 + '%';
+            heart.style.animationDuration = (8 + Math.random() * 4) + 's';
+            heart.style.animationDelay = Math.random() * 5 + 's';
+            heartsContainer.appendChild(heart);
+            
+            setTimeout(() => heart.remove(), 13000);
+        }
+
+        // Create hearts periodically
+        setInterval(createHeart, 800);
+        for (let i = 0; i < 10; i++) {
+            setTimeout(createHeart, i * 300);
+        }
+
+        // SoundCloud Widget Control
+        const widget = SC.Widget('soundcloud-widget');
+        const musicBtn = document.getElementById('musicBtn');
+        const playIcon = document.getElementById('playIcon');
+        const pauseIcon = document.getElementById('pauseIcon');
+        let isPlaying = false;
+
+        // Start Music Function
+        function startMusic() {
+            document.getElementById('music-prompt').style.display = 'none';
+            widget.play();
+            widget.setVolume(50); // 50% volume
+            isPlaying = true;
+            playIcon.classList.add('hidden');
+            pauseIcon.classList.remove('hidden');
+            
+            // Store music state in localStorage
+            localStorage.setItem('musicPlaying', 'true');
+        }
+
+        // Close Prompt Function
+        function closePrompt() {
+            document.getElementById('music-prompt').style.display = 'none';
+            localStorage.setItem('musicPromptClosed', 'true');
+        }
+
+        // Toggle Music
+        musicBtn.addEventListener('click', () => {
+            widget.isPaused(function(paused) {
+                if (paused) {
+                    widget.play();
+                    playIcon.classList.add('hidden');
+                    pauseIcon.classList.remove('hidden');
+                    isPlaying = true;
+                    localStorage.setItem('musicPlaying', 'true');
+                } else {
+                    widget.pause();
+                    playIcon.classList.remove('hidden');
+                    pauseIcon.classList.add('hidden');
+                    isPlaying = false;
+                    localStorage.setItem('musicPlaying', 'false');
+                }
+            });
+        });
+
+        // Check if music was playing (for page navigation)
+        window.addEventListener('load', () => {
+            const musicWasPlaying = localStorage.getItem('musicPlaying') === 'true';
+            const promptClosed = localStorage.getItem('musicPromptClosed') === 'true';
+            
+            if (musicWasPlaying) {
+                document.getElementById('music-prompt').style.display = 'none';
+                widget.play();
+                playIcon.classList.add('hidden');
+                pauseIcon.classList.remove('hidden');
+            } else if (promptClosed) {
+                document.getElementById('music-prompt').style.display = 'none';
+            }
+        });
+
+        // Add smooth scroll behavior
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+    <script src="js/config-loader.js"></script>
+    <script src="js/confetti.js"></script>
+    <script src="js/music.js"></script>
+    <script src="js/theme.js"></script>
+    <script src="js/notes.js"></script>
+    <script>
+        // Intersection Observer for fade-in animations
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target); // Only animate once
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in-scroll').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
 </body>
 </html>

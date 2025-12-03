@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Love Cipher - Ayomide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #d4af37;
+            --dark-bg: #0f172a;
+            --glass: rgba(255, 255, 255, 0.05);
+        }
+        body {
+            font-family: 'Lato', sans-serif;
+            background-color: var(--dark-bg);
+            background-image: 
+                radial-gradient(circle at 50% 50%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
+                url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d4af37' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            color: #e2e8f0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .cinzel { font-family: 'Cinzel', serif; }
+        
+        /* Glass Panel */
+        .cipher-panel {
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Grid Styling */
+        .crossword-grid {
+            display: grid;
+            gap: 4px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            border: 1px solid rgba(212, 175, 55, 0.1);
+            margin: 0 auto;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+        }
+        .cell {
+            width: 36px;
+            height: 36px;
+            position: relative;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        .cell.active-cell {
+            background: rgba(212, 175, 55, 0.1);
+            border-color: var(--gold);
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
+        }
+        .cell.empty {
+            background: transparent;
+            border: none;
+        }
+        .cell input {
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            border: none;
+            color: var(--gold);
+            font-family: 'Cinzel', serif;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            text-transform: uppercase;
+            outline: none;
+            text-shadow: 0 0 5px rgba(212, 175, 55, 0.5);
+        }
+        .cell-number {
+            position: absolute;
+            top: 1px;
+            left: 2px;
+            font-size: 9px;
+            color: rgba(255, 255, 255, 0.5);
+            pointer-events: none;
+        }
+
+        /* Clue List */
+        .clue-item {
+            padding: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .clue-item:hover {
+            background: rgba(212, 175, 55, 0.1);
+            padding-left: 12px;
+        }
+        .clue-number {
+            color: var(--gold);
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        /* Animations */
+        @keyframes glow {
+            0% { box-shadow: 0 0 5px var(--gold); }
+            50% { box-shadow: 0 0 20px var(--gold), 0 0 10px white; }
+            100% { box-shadow: 0 0 5px var(--gold); }
+        }
+        .solved-word {
+            animation: glow 1.5s ease-in-out infinite alternate;
+            background: rgba(212, 175, 55, 0.2) !important;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(5px);
+        }
+        .secret-letter {
+            background: #fff1e0;
+            color: #333;
+            font-family: 'Cinzel', serif;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%239C92AC' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+            transform: rotate(-1deg);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8 flex flex-col items-center">
+
+    <!-- Header -->
+    <header class="text-center mb-8 fade-in">
+        <div class="text-5xl mb-2 text-yellow-500 drop-shadow-lg">⚜️</div>
+        <h1 class="cinzel text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 via-yellow-500 to-yellow-200 mb-2">
+            The Love Cipher
+        </h1>
+        <p class="text-gray-400 italic">"Unlock the secrets of our story..."</p>
+        <a href="../index.html" class="inline-block mt-4 text-yellow-600 hover:text-yellow-400 transition-colors text-sm uppercase tracking-widest border-b border-transparent hover:border-yellow-500">
+            ← Return to Home
+        </a>
+    </header>
+
+    <!-- Main Content -->
+    <div class="flex flex-col lg:flex-row gap-8 w-full max-w-6xl items-start">
+        
+        <!-- Grid Section -->
+        <div class="w-full lg:w-2/3 flex justify-center overflow-x-auto pb-4">
+            <div id="grid-container" class="relative">
+                <!-- Grid injected here -->
+                <div class="absolute -inset-4 bg-yellow-500/5 blur-xl -z-10 rounded-full"></div>
+            </div>
+        </div>
+
+        <!-- Clues Section -->
+        <div class="w-full lg:w-1/3 cipher-panel rounded-xl p-6 h-[600px] overflow-y-auto custom-scrollbar">
+            <h2 class="cinzel text-2xl font-bold text-yellow-500 mb-6 border-b border-yellow-500/30 pb-2">
+                Cryptic Clues
+            </h2>
+            
+            <div class="mb-8">
+                <h3 class="text-xs uppercase tracking-widest text-gray-500 mb-3 font-bold">Horizontal Cipher</h3>
+                <div id="clues-across" class="space-y-1"></div>
+            </div>
+
+            <div>
+                <h3 class="text-xs uppercase tracking-widest text-gray-500 mb-3 font-bold">Vertical Cipher</h3>
+                <div id="clues-down" class="space-y-1"></div>
+            </div>
+
+            <button id="check-btn" class="w-full mt-8 bg-gradient-to-r from-yellow-700 to-yellow-500 text-black cinzel font-bold py-4 rounded shadow-lg hover:shadow-yellow-500/20 hover:scale-[1.02] transition-all">
+                Decrypt Cipher 🔓
+            </button>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="success-modal" class="fixed inset-0 modal-overlay hidden z-50 flex items-center justify-center p-4">
+        <div class="secret-letter max-w-lg w-full p-8 md:p-12 rounded shadow-2xl relative transform scale-90 opacity-0 transition-all duration-700" id="letter-content">
+            <div class="absolute -top-6 left-1/2 transform -translate-x-1/2">
+                <div class="w-12 h-12 bg-red-800 rounded-full border-4 border-red-900 shadow-lg flex items-center justify-center text-white text-xs font-bold">
+                    SEAL
+                </div>
+            </div>
+            
+            <h2 class="text-3xl font-bold text-center mb-6 text-red-900 border-b-2 border-red-900/20 pb-4">
+                Cipher Solved
+            </h2>
+            <p class="text-lg leading-relaxed mb-6 text-gray-800">
+                My Dearest Ayomide,
+            </p>
+            <p class="text-lg leading-relaxed mb-6 text-gray-800">
+                You've unlocked every word, just as you've unlocked every part of my heart. You know our story better than anyone because you are the co-author of this beautiful journey.
+            </p>
+            <p class="text-lg leading-relaxed mb-8 text-gray-800 font-bold italic text-center">
+                "You are my mystery solved, my treasure found."
+            </p>
+            
+            <button onclick="closeModal()" class="block w-full bg-red-900 text-white py-3 rounded hover:bg-red-800 transition-colors font-sans uppercase tracking-widest text-sm">
+                Close Letter
+            </button>
+        </div>
+    </div>
+
+    <script src="../js/config-loader.js"></script>
+    <script src="../js/music.js"></script>
+    <script src="../js/confetti.js"></script>
+    <script>
+        // Audio Context for Sound Effects
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function playClickSound() {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(300, audioCtx.currentTime + 0.05);
+            gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.05);
+        }
+
+        function playSuccessChime() {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const now = audioCtx.currentTime;
+            const notes = [523.25, 659.25, 783.99, 1046.50]; // C Major Arpeggio
+            notes.forEach((freq, i) => {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.value = freq;
+                gain.gain.setValueAtTime(0, now + i*0.1);
+                gain.gain.linearRampToValueAtTime(0.1, now + i*0.1 + 0.05);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + i*0.1 + 1.5);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(now + i*0.1);
+                osc.stop(now + i*0.1 + 1.5);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Wait for config
+            let cfg;
+            if (window.SITE_CONFIG_READY) {
+                cfg = await window.SITE_CONFIG_READY;
+            } else {
+                cfg = window.SITE_CONFIG || await new Promise(r => {
+                    const check = setInterval(() => {
+                        if (window.SITE_CONFIG) { clearInterval(check); r(window.SITE_CONFIG); }
+                    }, 100);
+                });
+            }
+
+            const words = cfg.crossword || [];
+            if (words.length === 0) return;
+
+            // Calculate grid size
+            let maxX = 0, maxY = 0;
+            words.forEach(w => {
+                const len = w.word.length;
+                if (w.direction === 'across') {
+                    maxX = Math.max(maxX, w.x + len);
+                    maxY = Math.max(maxY, w.y + 1);
+                } else {
+                    maxX = Math.max(maxX, w.x + 1);
+                    maxY = Math.max(maxY, w.y + len);
+                }
+            });
+            maxX += 1; maxY += 1;
+
+            const gridEl = document.createElement('div');
+            gridEl.className = 'crossword-grid';
+            gridEl.style.gridTemplateColumns = `repeat(${maxX}, auto)`;
+            
+            const gridState = Array(maxY).fill().map(() => Array(maxX).fill(null));
+            const cellMap = {};
+
+            // Initialize Grid
+            for (let y = 0; y < maxY; y++) {
+                for (let x = 0; x < maxX; x++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell empty';
+                    cell.dataset.x = x;
+                    cell.dataset.y = y;
+                    gridEl.appendChild(cell);
+                    cellMap[`${x}-${y}`] = cell;
+                }
+            }
+
+            // Place Words
+            let clueCount = 1;
+            words.forEach(w => {
+                const startCell = cellMap[`${w.x}-${w.y}`];
+                if (!startCell.querySelector('.cell-number')) {
+                    const num = document.createElement('span');
+                    num.className = 'cell-number';
+                    num.textContent = clueCount;
+                    startCell.appendChild(num);
+                    w.number = clueCount++;
+                } else {
+                    w.number = startCell.querySelector('.cell-number').textContent;
+                }
+
+                for (let i = 0; i < w.word.length; i++) {
+                    const cx = w.direction === 'across' ? w.x + i : w.x;
+                    const cy = w.direction === 'across' ? w.y : w.y + i;
+                    const cell = cellMap[`${cx}-${cy}`];
+                    
+                    cell.classList.remove('empty');
+                    cell.classList.add('active-cell');
+                    
+                    if (!cell.querySelector('input')) {
+                        const input = document.createElement('input');
+                        input.maxLength = 1;
+                        input.dataset.correct = w.word[i].toUpperCase();
+                        input.addEventListener('input', (e) => {
+                            playClickSound();
+                            if (e.target.value) {
+                                // Simple auto-focus logic could go here
+                            }
+                        });
+                        cell.appendChild(input);
+                    }
+                }
+
+                // Add Clue
+                const listId = w.direction === 'across' ? 'clues-across' : 'clues-down';
+                const div = document.createElement('div');
+                div.className = 'clue-item text-sm text-gray-300';
+                div.innerHTML = `<span class="clue-number">${w.number}</span> ${w.clue}`;
+                document.getElementById(listId).appendChild(div);
+            });
+
+            document.getElementById('grid-container').appendChild(gridEl);
+
+            // Check Logic
+            document.getElementById('check-btn').onclick = () => {
+                const inputs = document.querySelectorAll('.cell input');
+                let allCorrect = true;
+                
+                inputs.forEach(inp => {
+                    if (inp.value.toUpperCase() === inp.dataset.correct) {
+                        inp.style.color = '#4ade80'; // green
+                        inp.style.textShadow = '0 0 10px #4ade80';
+                    } else {
+                        allCorrect = false;
+                        if (inp.value) {
+                            inp.style.color = '#f87171'; // red
+                        }
+                    }
+                });
+
+                if (allCorrect) {
+                    playSuccessChime();
+                    if (window.confetti) window.confetti({ particleCount: 200, spread: 150, colors: ['#d4af37', '#ffffff'] });
+                    
+                    // Show Modal
+                    const modal = document.getElementById('success-modal');
+                    const content = document.getElementById('letter-content');
+                    modal.classList.remove('hidden');
+                    setTimeout(() => {
+                        content.classList.remove('scale-90', 'opacity-0');
+                        content.classList.add('scale-100', 'opacity-100');
+                    }, 100);
+                }
+            };
+        });
+
+        function closeModal() {
+            document.getElementById('success-modal').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>

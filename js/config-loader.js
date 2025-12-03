@@ -18,4 +18,26 @@
         window.SITE_CONFIG = { startDate: '2025-09-08', celebrationDate: '2025-11-08', months:2, durationDays:61, useSoundCloud:true, soundCloudTrackUrl:'https://api.soundcloud.com/tracks/2019893204', localAudioPath:'/audio/track.mp3', themeDefault:'light', secretNoteCode:'MIDELOVE' };
         return window.SITE_CONFIG;
     })();
+
+    // Auto-replace text content based on config
+    window.SITE_CONFIG_READY.then(cfg => {
+        if (!cfg) return;
+        document.querySelectorAll('[data-config-text]').forEach(el => {
+            const key = el.getAttribute('data-config-text');
+            if (cfg[key] !== undefined) {
+                el.textContent = cfg[key];
+            } else if (key.includes('.')) {
+                // Handle nested keys like themes.month1
+                const parts = key.split('.');
+                let val = cfg;
+                for (const p of parts) val = val && val[p];
+                if (val) el.textContent = val;
+            }
+        });
+
+        // Update Title if needed
+        if (cfg.anniversaryText) {
+            document.title = document.title.replace(/Two-Month|Three-Month/g, cfg.anniversaryText);
+        }
+    });
 })();

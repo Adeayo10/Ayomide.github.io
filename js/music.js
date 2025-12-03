@@ -1,8 +1,10 @@
-// Shared music controller (SoundCloud widget) - stores play state and position in localStorage
+// Shared music controller (SoundCloud widget + HTML5) - Music Box Edition
 (function(){
-    // Load config (try likely relative paths)
+    // Helper to load config if not already present (backward compat)
     async function loadConfig(){
         if (window.SITE_CONFIG) return window.SITE_CONFIG;
+        if (window.SITE_CONFIG_READY) return await window.SITE_CONFIG_READY;
+        // Fallback fetch
         const candidates = ['./site-config.json','../site-config.json','/site-config.json'];
         for (const p of candidates) {
             try {
@@ -13,24 +15,44 @@
                 return cfg;
             } catch(e) { /* try next */ }
         }
-        // sensible defaults
-        window.SITE_CONFIG = { useSoundCloud: true, soundCloudTrackUrl: 'https://api.soundcloud.com/tracks/2019893204', localAudioPath: '/audio/track.mp3' };
-        return window.SITE_CONFIG;
+        return { useSoundCloud: true, soundCloudTrackUrl: 'https://api.soundcloud.com/tracks/2019893204' };
     }
 
     async function main(){
         const cfg = await loadConfig();
+        
+        // Construct Playlist
+        let playlist = [];
+        if (cfg.playlist && Array.isArray(cfg.playlist) && cfg.playlist.length > 0) {
+            playlist = cfg.playlist;
+        } else {
+            // Backward compatibility
+            if (cfg.soundCloudTrackUrl) {
+                playlist.push({ title: 'Our Theme', url: cfg.soundCloudTrackUrl, source: 'soundcloud' });
+            }
+            // Check local audio
+            const localPath = cfg.localAudioPath || '/audio/track.mp3';
+            // We'll check if it exists later, or just add it if configured
+            if (cfg.localAudioPath) {
+                 playlist.push({ title: 'Local Track', url: localPath, source: 'local' });
+            }
+        }
+
+        let currentTrackIndex = Number(localStorage.getItem('musicTrackIndex') || 0);
+        if (currentTrackIndex >= playlist.length) currentTrackIndex = 0;
+
+        let widget = null;
+        let audioEl = null;
+        let isPlaying = false;
+        let saveInterval = null;
+
+        // SoundCloud Setup
         const SC_SRC = 'https://w.soundcloud.com/player/api.js';
         const WIDGET_ID = 'soundcloud-widget';
-        const TRACK_IFRAME_SRC = cfg.soundCloudTrackUrl ? ('https://w.soundcloud.com/player/?url=' + encodeURIComponent(cfg.soundCloudTrackUrl) + '&color=%23ff5500&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false&visual=false') : null;
-        let widget;
-        let saveInterval;
-        let audioEl = null;
-        let useAudio = false;
-
+        
         function ensureSC(cb) {
             if (window.SC && window.SC.Widget) return cb();
-            const existing = document.querySelector('script[src="https://w.soundcloud.com/player/api.js"]');
+            const existing = document.querySelector(`script[src="${SC_SRC}"]`);
             if (!existing) {
                 const s = document.createElement('script');
                 s.src = SC_SRC;
@@ -52,111 +74,108 @@
                 iframe.frameBorder = 'no';
                 iframe.allow = 'autoplay';
                 iframe.style.display = 'none';
-                iframe.src = TRACK_IFRAME_SRC;
+                iframe.src = 'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/2019893204&color=%23ff5500&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false&visual=false';
                 document.body.appendChild(iframe);
             }
             return iframe;
         }
 
-        // Try to detect a local audio file by attempting to load metadata via an Audio element
-        function tryUseHtml5AudioCandidate(path) {
-            return new Promise(resolve => {
-                if (!path) return resolve(null);
-                try {
-                    const a = document.createElement('audio');
-                    a.preload = 'metadata';
-                    a.src = path;
-                    // if metadata loads, audio is available
-                    const onLoaded = () => { cleanup(); resolve(path); };
-                    const onError = () => { cleanup(); resolve(null); };
-                    function cleanup(){ a.removeEventListener('loadedmetadata', onLoaded); a.removeEventListener('error', onError); }
-                    a.addEventListener('loadedmetadata', onLoaded);
-                    a.addEventListener('error', onError);
-                    // in case browser blocks, timeout
-                    setTimeout(() => { cleanup(); resolve(null); }, 1500);
-                } catch(e){ resolve(null); }
-            });
-        }
+        // Player Logic
+        function loadTrack(index, autoPlay = false) {
+            const track = playlist[index];
+            if (!track) return;
+            
+            // Stop existing
+            if (audioEl) { audioEl.pause(); audioEl.style.display = 'none'; }
+            if (widget) { widget.pause(); }
 
-        async function tryUseHtml5Audio() {
-            const path = cfg.localAudioPath || '/audio/track.mp3';
-            const candidates = [path, './' + path.replace(/^\//,''), '../' + path.replace(/^\//,'')];
-            for (const p of candidates) {
-                const ok = await tryUseHtml5AudioCandidate(p);
-                if (ok) return ok;
-            }
-            return null;
-        }
+            currentTrackIndex = index;
+            localStorage.setItem('musicTrackIndex', index);
 
-        function initWidget() {
-            tryUseHtml5Audio().then(path => {
-                if (path) {
-                    useAudio = true;
+            if (track.source === 'local' || track.type === 'local') {
+                if (!audioEl) {
                     audioEl = document.createElement('audio');
                     audioEl.id = 'shared-audio';
-                    audioEl.src = path;
-                    audioEl.preload = 'metadata';
-                    audioEl.style.display = 'none';
                     document.body.appendChild(audioEl);
-
-                    const wasPlaying = localStorage.getItem('musicPlaying') === 'true';
-                    const savedPos = Number(localStorage.getItem('musicPosition') || 0);
-                    if (savedPos && !isNaN(savedPos)) {
-                        audioEl.currentTime = savedPos / 1000;
-                    }
-                    audioEl.addEventListener('play', () => {
-                        localStorage.setItem('musicPlaying','true');
-                        toggleIcons(true);
-                        startSavingPosition();
-                    });
-                    audioEl.addEventListener('pause', () => {
-                        localStorage.setItem('musicPlaying','false');
-                        toggleIcons(false);
-                        stopSavingPosition();
-                    });
-                    if (wasPlaying) {
-                        audioEl.play().catch(()=>{});
-                        toggleIcons(true);
-                    }
-                    return;
+                    audioEl.addEventListener('ended', playNext);
+                    audioEl.addEventListener('play', onPlay);
+                    audioEl.addEventListener('pause', onPause);
                 }
-
-                // Fallback to SoundCloud widget if allowed
-                if (!cfg.useSoundCloud || !TRACK_IFRAME_SRC) return;
-                const iframe = createOrFindIframe();
-                widget = SC.Widget(iframe);
-
-                const wasPlaying = localStorage.getItem('musicPlaying') === 'true';
-                const savedPos = Number(localStorage.getItem('musicPosition') || 0);
-
-                widget.bind(SC.Widget.Events.READY, () => {
-                    if (savedPos && !isNaN(savedPos)) {
-                        try { widget.seekTo(savedPos); } catch(e) {}
+                audioEl.src = track.url;
+                audioEl.style.display = 'none';
+                if (autoPlay) audioEl.play().catch(e => console.log('Autoplay blocked', e));
+                else {
+                    // Restore position if same track
+                    const savedPos = Number(localStorage.getItem('musicPosition') || 0);
+                    if (savedPos) audioEl.currentTime = savedPos / 1000;
+                }
+            } else {
+                // SoundCloud
+                ensureSC(() => {
+                    const iframe = createOrFindIframe();
+                    if (!widget) {
+                        widget = SC.Widget(iframe);
+                        widget.bind(SC.Widget.Events.FINISH, playNext);
+                        widget.bind(SC.Widget.Events.PLAY, onPlay);
+                        widget.bind(SC.Widget.Events.PAUSE, onPause);
                     }
-                    if (wasPlaying) {
-                        widget.play();
-                        toggleIcons(true);
-                    }
+                    widget.load(track.url, {
+                        auto_play: autoPlay,
+                        show_artwork: false,
+                        callback: () => {
+                            if (!autoPlay) {
+                                const savedPos = Number(localStorage.getItem('musicPosition') || 0);
+                                if (savedPos) widget.seekTo(savedPos);
+                            }
+                        }
+                    });
                 });
+            }
+            updateModalUI();
+        }
 
-                widget.bind(SC.Widget.Events.PLAY, () => {
-                    localStorage.setItem('musicPlaying','true');
-                    toggleIcons(true);
-                    startSavingPosition();
-                });
+        function togglePlay() {
+            const track = playlist[currentTrackIndex];
+            if (track.source === 'local' || track.type === 'local') {
+                if (audioEl.paused) audioEl.play(); else audioEl.pause();
+            } else {
+                if (widget) widget.toggle();
+            }
+        }
 
-                widget.bind(SC.Widget.Events.PAUSE, () => {
-                    localStorage.setItem('musicPlaying','false');
-                    toggleIcons(false);
-                    stopSavingPosition();
-                });
-            }).catch(()=>{});
+        function playNext() {
+            let next = currentTrackIndex + 1;
+            if (next >= playlist.length) next = 0;
+            loadTrack(next, true);
+        }
+
+        function playPrev() {
+            let prev = currentTrackIndex - 1;
+            if (prev < 0) prev = playlist.length - 1;
+            loadTrack(prev, true);
+        }
+
+        function onPlay() {
+            isPlaying = true;
+            localStorage.setItem('musicPlaying', 'true');
+            toggleIcons(true);
+            startSavingPosition();
+            updateModalUI();
+        }
+
+        function onPause() {
+            isPlaying = false;
+            localStorage.setItem('musicPlaying', 'false');
+            toggleIcons(false);
+            stopSavingPosition();
+            updateModalUI();
         }
 
         function startSavingPosition(){
             stopSavingPosition();
             saveInterval = setInterval(() => {
-                if (useAudio && audioEl) {
+                const track = playlist[currentTrackIndex];
+                if ((track.source === 'local' || track.type === 'local') && audioEl) {
                     localStorage.setItem('musicPosition', String(Math.floor(audioEl.currentTime * 1000)));
                 } else if (widget) {
                     widget.getPosition(pos => {
@@ -170,6 +189,7 @@
             if (saveInterval) { clearInterval(saveInterval); saveInterval = null; }
         }
 
+        // UI
         function toggleIcons(playing) {
             const playIcon = document.getElementById('playIcon');
             const pauseIcon = document.getElementById('pauseIcon');
@@ -178,13 +198,78 @@
             else { playIcon.classList.remove('hidden'); pauseIcon.classList.add('hidden'); }
         }
 
+        function createMusicBoxModal() {
+            if (document.getElementById('musicBoxModal')) return;
+            const modal = document.createElement('div');
+            modal.id = 'musicBoxModal';
+            modal.style.display = 'none';
+            modal.style.position = 'fixed';
+            modal.style.bottom = '100px';
+            modal.style.right = '30px';
+            modal.style.width = '300px';
+            modal.style.background = 'rgba(255, 255, 255, 0.95)';
+            modal.style.backdropFilter = 'blur(10px)';
+            modal.style.borderRadius = '16px';
+            modal.style.padding = '20px';
+            modal.style.boxShadow = '0 10px 30px rgba(0,0,0,0.2)';
+            modal.style.zIndex = '9999';
+            modal.innerHTML = `
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
+                    <h3 style="margin:0;font-family:'Playfair Display',serif;color:#4a5568;">🎵 Melody Box</h3>
+                    <button id="closeMusicBox" style="background:none;border:none;font-size:20px;cursor:pointer;">&times;</button>
+                </div>
+                <div id="trackList" style="max-height:200px;overflow-y:auto;margin-bottom:15px;"></div>
+                <div style="display:flex;justify-content:center;gap:15px;align-items:center;">
+                    <button id="prevBtn" style="background:none;border:none;cursor:pointer;font-size:24px;">⏮️</button>
+                    <button id="playPauseBtn" style="background:#667eea;border:none;border-radius:50%;width:50px;height:50px;color:white;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+                        <span id="mbPlay">▶️</span><span id="mbPause" style="display:none;">⏸️</span>
+                    </button>
+                    <button id="nextBtn" style="background:none;border:none;cursor:pointer;font-size:24px;">⏭️</button>
+                </div>
+            `;
+            document.body.appendChild(modal);
+
+            document.getElementById('closeMusicBox').onclick = () => modal.style.display = 'none';
+            document.getElementById('prevBtn').onclick = playPrev;
+            document.getElementById('nextBtn').onclick = playNext;
+            document.getElementById('playPauseBtn').onclick = togglePlay;
+        }
+
+        function updateModalUI() {
+            const list = document.getElementById('trackList');
+            if (!list) return;
+            list.innerHTML = '';
+            playlist.forEach((track, i) => {
+                const item = document.createElement('div');
+                item.textContent = (i === currentTrackIndex ? '🎵 ' : '') + track.title;
+                item.style.padding = '8px';
+                item.style.borderRadius = '8px';
+                item.style.cursor = 'pointer';
+                item.style.fontSize = '14px';
+                item.style.background = i === currentTrackIndex ? '#f3e8ff' : 'transparent';
+                item.style.color = i === currentTrackIndex ? '#6b46c1' : '#4a5568';
+                item.onclick = () => loadTrack(i, true);
+                list.appendChild(item);
+            });
+
+            const mbPlay = document.getElementById('mbPlay');
+            const mbPause = document.getElementById('mbPause');
+            if (isPlaying) {
+                mbPlay.style.display = 'none';
+                mbPause.style.display = 'block';
+            } else {
+                mbPlay.style.display = 'block';
+                mbPause.style.display = 'none';
+            }
+        }
+
         function ensureMusicButton() {
             let btn = document.getElementById('musicBtn');
             if (!btn) {
                 btn = document.createElement('button');
                 btn.id = 'musicBtn';
                 btn.className = 'music-btn';
-                btn.title = 'Toggle Music';
+                btn.title = 'Music Box';
                 btn.innerHTML = '<svg id="playIcon" class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>\n                <svg id="pauseIcon" class="w-8 h-8 text-white hidden" fill="currentColor" viewBox="0 0 24 24"><path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/></svg>';
                 btn.style.position = 'fixed';
                 btn.style.bottom = '30px';
@@ -199,25 +284,29 @@
                 document.body.appendChild(btn);
             }
 
-            btn.addEventListener('click', () => {
-                if (useAudio && audioEl) {
-                    if (audioEl.paused) audioEl.play().catch(()=>{}); else audioEl.pause();
-                    return;
+            btn.onclick = () => {
+                if (playlist.length > 1) {
+                    const modal = document.getElementById('musicBoxModal');
+                    if (modal.style.display === 'none') {
+                        modal.style.display = 'block';
+                        updateModalUI();
+                    } else {
+                        modal.style.display = 'none';
+                    }
+                } else {
+                    togglePlay();
                 }
-                if (!widget) return;
-                widget.isPaused(paused => {
-                    if (paused) widget.play(); else widget.pause();
-                });
-            });
+            };
         }
 
         // Init
-        if (cfg.useSoundCloud) ensureSC(() => { try { initWidget(); } catch(e) {} });
-        else initWidget();
+        createMusicBoxModal();
         ensureMusicButton();
+        
+        // Restore state
+        const wasPlaying = localStorage.getItem('musicPlaying') === 'true';
+        loadTrack(currentTrackIndex, wasPlaying);
     }
 
-    // start
-    try { main(); } catch(e) { console.error('music init err', e); }
-
+    try { main(); } catch(e) { console.error('Music Box Init Error', e); }
 })();

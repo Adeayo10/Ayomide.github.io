@@ -75,7 +75,7 @@
         </h1>
         
         <p class="text-gray-600 mb-8 text-lg">
-            Two months of intentional love, endless promises for you
+            <span data-config-text="anniversaryDurationText">Three months</span> of intentional love, endless promises for you
         </p>
 
         <!-- Promise Display Box -->
@@ -86,7 +86,7 @@
         </div>
 
         <!-- Reveal Button -->
-        <button onclick="revealPromise()" class="btn-reveal bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold px-8 py-4 rounded-full text-lg shadow-lg hover:shadow-2xl">
+        <button onclick="revealPromise()" class="btn-reveal bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold px-8 py-4 rounded-full text-lg shadow-lg hover:shadow-2xl mb-12">
             <span class="flex items-center justify-center gap-2">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
@@ -96,127 +96,25 @@
         </button>
 
         <!-- Counter -->
-        <p class="text-gray-500 text-sm mt-6">
+        <p class="text-gray-500 text-sm mt-12">
             Promises revealed: <span id="counter" class="font-bold text-purple-600">0</span>
         </p>
 
         <!-- Footer -->
         <div class="mt-12 pt-6 border-t border-gray-200">
             <p class="text-gray-600 italic">
-                Happy Two-Month Anniversary, Ayomide 💜
+                Happy <span data-config-text="anniversaryText">Three-Month</span> Anniversary, Ayomide 💜
             </p>
             <p class="text-sm text-gray-500 mt-2">
-                Made with love, November 8, 2025
+                Made with love, <span data-config-text="footerDate">December 8, 2025</span>
             </p>
-            <a href="anniversary-landing.html" class="inline-block mt-6 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-full hover:shadow-lg transition-all">
+            <a href="../index.html" class="inline-block mt-6 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-full hover:shadow-lg transition-all">
                 ← Back to Home
             </a>
         </div>
     </div>
 
     <script>
-        const promises = [
-            "You are my steady part, the calm in every storm, the peace in every chaos.",
-            "You are my Firelighter — the spark that ignites my purpose and passion.",
-            "I choose you intentionally, not by chance, but by design and devotion.",
-            "Every moment with you is a step toward forever, not a pause in time.",
-            "You are not just my partner; you are my vision, my future, my destiny.",
-            "I will be your anchor when the world tries to shake you.",
-            "Your dreams are my mission; your happiness is my purpose.",
-            "Distance is temporary, but my commitment to you is eternal.",
-            "I see you — not just your beauty, but your soul, your strength, your fire.",
-            "You deserve intentional love, and I promise to give it to you every single day.",
-            "I will protect your heart like it's the most precious thing in the world — because it is.",
-            "You are the reason I believe in destiny and the power of choosing love.",
-            "I promise to grow with you, to build with you, to create a life that honors us both.",
-            "Your vulnerability is safe with me; I will never take it for granted.",
-            "I will celebrate your wins like they're mine and carry your burdens like they're lighter together.",
-            "You make me want to be better, stronger, more intentional in everything I do.",
-            "I will never stop reminding you that you are seen, valued, and deeply loved.",
-            "Our love is not an accident; it's a choice I make every day, and I always will.",
-            "When you doubt yourself, I will be the voice reminding you of your greatness.",
-            "I promise to listen — not just to your words, but to your silence, your fears, your unspoken needs.",
-            "Your happiness will always be my priority, never an afterthought.",
-            "I will fight for us when things get hard, not run away when love demands courage.",
-            "You are safe to be completely yourself with me — messy, imperfect, beautifully human.",
-            "I will never compare you to anyone else; you are incomparable, irreplaceable.",
-            "Your past shaped you, but it doesn't define you. I see who you're becoming.",
-            "I promise to make you laugh when life feels heavy and hold you when words aren't enough.",
-            "Distance may keep us apart, but it will never diminish how deeply I cherish you.",
-            "I will be patient with your healing and gentle with your heart.",
-            "You will never have to beg for my attention, effort, or consistency — I give them freely.",
-            "I promise to be your safe space, your home, no matter where we are in the world.",
-            "I will celebrate your independence while being the partner you can always count on.",
-            "Your ambitions inspire me; I will never ask you to shrink yourself for my comfort.",
-            "I promise to speak life into you, especially when you're struggling to see your own worth.",
-            "I will love you in the small moments — the quiet mornings, the random texts, the mundane days.",
-            "You are not a responsibility to me; you are a privilege, a gift, a blessing I don't take lightly.",
-            "I promise to choose transparency over hiding, even when vulnerability feels terrifying.",
-            "I will never make you feel like loving me is a burden you have to carry.",
-            "Your trust is sacred to me; I will guard it fiercely and never give you reason to doubt me.",
-            "I promise to be consistent — not just when it's easy, but especially when it's not.",
-            "You deserve a love that feels like peace, not chaos. I promise to be your peace."
-        ];
-
-        let counter = 0;
-        let lastIndex = -1;
-        
-        // Audio context for sound effects
-        let audioContext;
-        
-        function initAudio() {
-            if (!audioContext) {
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            }
-        }
-        
-        function playUnlockSound() {
-            initAudio();
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
-            
-            oscillator.connect(gainNode);
-            gainNode.connect(audioContext.destination);
-            
-            oscillator.frequency.value = 800;
-            oscillator.type = 'sine';
-            
-            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-            
-            oscillator.start(audioContext.currentTime);
-            oscillator.stop(audioContext.currentTime + 0.5);
-        }
-
-        function revealPromise() {
-            const promiseText = document.getElementById('promiseText');
-            const counterElement = document.getElementById('counter');
-            
-            // Get random promise (avoid repeating the last one if possible)
-            let randomIndex;
-            do {
-                randomIndex = Math.floor(Math.random() * promises.length);
-            } while (randomIndex === lastIndex && promises.length > 1);
-            
-            lastIndex = randomIndex;
-            
-            // Play unlock sound
-            playUnlockSound();
-            
-            // Fade out animation
-            promiseText.style.opacity = '0';
-            
-            setTimeout(() => {
-                promiseText.textContent = promises[randomIndex];
-                promiseText.style.opacity = '1';
-                counter++;
-                counterElement.textContent = counter;
-                
-                // Create heart particles
-                createHeartParticles();
-            }, 300);
-        }
-
         function createHeartParticles() {
             for (let i = 0; i < 12; i++) {
                 setTimeout(() => {
@@ -230,19 +128,81 @@
                 }, i * 50);
             }
         }
-
-        // Add keyboard shortcut (Space or Enter)
-        document.addEventListener('keydown', (e) => {
-            if (e.code === 'Space' || e.code === 'Enter') {
-                e.preventDefault();
-                revealPromise();
-            }
-        });
     </script>
     <script src="../js/config-loader.js"></script>
-    <script src="../js/confetti.js"></script>
-    <script src="../js/music.js"></script>
-    <script src="../js/theme.js"></script>
     <script src="../js/notes.js"></script>
+    <script src="../js/confetti.js"></script>
+    <script>
+        function revealPromise() {
+            const textEl = document.getElementById('promiseText');
+            const counterEl = document.getElementById('counter');
+            
+            // Animation
+            textEl.style.opacity = '0';
+            textEl.style.transform = 'translateY(10px)';
+            
+            setTimeout(() => {
+                const randomPromise = promises[Math.floor(Math.random() * promises.length)];
+                textEl.textContent = randomPromise;
+                textEl.style.opacity = '1';
+                textEl.style.transform = 'translateY(0)';
+                
+                // Update counter
+                let count = parseInt(localStorage.getItem('promiseCount') || '0');
+                count++;
+                localStorage.setItem('promiseCount', count);
+                if (counterEl) counterEl.textContent = count;
+                
+                // Confetti
+                if (window.confetti) {
+                    window.confetti({
+                        particleCount: 50,
+                        spread: 60,
+                        origin: { y: 0.7 }
+                    });
+                }
+                
+                createHeartParticles();
+            }, 300);
+        }
+
+        // Init counter
+        document.addEventListener('DOMContentLoaded', () => {
+            const counterEl = document.getElementById('counter');
+            if (counterEl) counterEl.textContent = localStorage.getItem('promiseCount') || '0';
+        });
+
+        const promises = [
+            "I promise to always be your safe space, no matter where life takes us.",
+            "You are the love that I chose intentionally, every single day.",
+            "In every moment we share, I find a reason to love you more.",
+            "Your happiness is my mission, and I will pursue it relentlessly.",
+            "I promise to be the anchor in your life, steady and unwavering.",
+            "Together, we will build a future filled with love, laughter, and understanding.",
+            "I will celebrate your victories and support you in your challenges.",
+            "You are not just my partner; you are my greatest inspiration.",
+            "I promise to listen, to hear, and to understand your needs and desires.",
+            "With you, I have found the love that I always dreamed of.",
+            "I will cherish and protect your heart, for it is my most prized possession.",
+            "You are the reason I believe in the beauty of love and commitment.",
+            "I promise to grow with you, exploring all the wonders life has to offer.",
+            "Your trust is sacred to me, and I will honor it with my actions.",
+            "I will be your safe harbor, providing comfort and solace in times of storm.",
+            "Together, we will create a love story that is uniquely ours.",
+            "I promise to choose you, again and again, in this life and the next.",
+            "You are my today and all of my tomorrows, my forever love.",
+            "I will love you fiercely and tenderly, with all that I am.",
+            "In your eyes, I have found my home, my heart, my everything.",
+            "I promise to be your faithful companion, your partner in all of life's adventures.",
+            "I will always cherish and honor the love we share.",
+            "You are the best part of my life, the love that makes everything worthwhile.",
+            "I promise to love you with a love that is true, deep, and abiding.",
+            "With you, I am home, and with you, I am complete.",
+            "I will always stand by your side, supporting and encouraging you.",
+            "You are my greatest treasure, the love that I hold most dear.",
+            "I promise to be your shelter in the storm, your peace in the chaos.",
+            "Together, we will build a life filled with love, joy, and happiness."
+        ];
+    </script>
 </body>
 </html>

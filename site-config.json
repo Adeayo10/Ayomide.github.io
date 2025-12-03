@@ -1,12 +1,48 @@
 {
   "siteName": "Ayomide Anniversary",
+  "anniversaryText": "Three-Month",
+  "anniversaryDurationText": "Three months",
+  "anniversaryMonthsText": "Three Months",
+  "anniversaryNumber": "3",
+  "themes": {
+    "month1": "Intentional",
+    "month2": "Consistency",
+    "month3": "Comfort"
+  },
+  "themeDates": {
+    "month1": "October 2025",
+    "month2": "November 2025",
+    "month3": "December 2025"
+  },
+  "footerDate": "December 8, 2025",
   "startDate": "2025-09-08",
-  "celebrationDate": "2025-11-08",
-  "months": 2,
-  "durationDays": 61,
+  "celebrationDate": "2025-12-08",
+  "months": 3,
+  "durationDays": 91,
   "useSoundCloud": true,
   "soundCloudTrackUrl": "https://api.soundcloud.com/tracks/2019893204",
+  "playlist": [
+    { "title": "Perfect - Ed Sheeran", "url": "https://soundcloud.com/edsheeran/perfect-1", "source": "soundcloud" },
+    { "title": "Photograph - Ed Sheeran", "url": "https://soundcloud.com/edsheeran/photograph", "source": "soundcloud" },
+    { "title": "Thinking Out Loud - Ed Sheeran", "url": "https://soundcloud.com/edsheeran/thinking-out-loud", "source": "soundcloud" },
+    { "title": "Shape of You - Ed Sheeran", "url": "https://soundcloud.com/edsheeran/shape-of-you", "source": "soundcloud" },
+    { "title": "All of Me - John Legend", "url": "https://soundcloud.com/johnlegend/all-of-me", "source": "soundcloud" },
+    { "title": "Just The Way You Are - Bruno Mars", "url": "https://soundcloud.com/brunomars/just-the-way-you-are", "source": "soundcloud" },
+    { "title": "A Thousand Years - Christina Perri", "url": "https://soundcloud.com/christinaperri/a-thousand-years", "source": "soundcloud" }
+  ],
   "localAudioPath": "/audio/track.mp3",
+  "letters": [
+    { "id": "miss", "title": "Open When You Miss Me", "content": "Remember that I am always with you in spirit. Close your eyes and feel my hug. I love you more than miles can separate us." },
+    { "id": "sad", "title": "Open When You Are Sad", "content": "I hate to see you sad. Remember your smile lights up my world. Here is a virtual tissue and a massive bear hug. Everything will be okay." },
+    { "id": "laugh", "title": "Open When You Need a Laugh", "content": "Why did the scarecrow win an award? Because he was outstanding in his field! (I know, I know, terrible joke, but I hope it made you smile!)" },
+    { "id": "anniversary", "title": "Open on Dec 8", "content": "Happy 3rd Month Anniversary! These past 91 days have been the best of my life. Here's to many more months and years together. I love you!" }
+  ],
+  "crossword": [
+    { "word": "AYOMIDE", "clue": "My joy has come", "direction": "across", "x": 0, "y": 4 },
+    { "word": "LOVE", "clue": "What binds us together", "direction": "down", "x": 2, "y": 3 },
+    { "word": "FOREVER", "clue": "How long I'll love you", "direction": "down", "x": 6, "y": 1 },
+    { "word": "DECEMBER", "clue": "The month of our 3rd anniversary", "direction": "across", "x": 5, "y": 6 }
+  ],
   "themeDefault": "light",
-  "secretNoteCode": "MIDELOVE"
+  "secretNoteCode": "LUMLUM"
 }

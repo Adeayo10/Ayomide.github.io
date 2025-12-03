@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Open When... - For Ayomide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:wght@400;700&family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f3f4f6;
+            min-height: 100vh;
+            perspective: 1000px;
+            overflow-x: hidden;
+        }
+
+        /* Wood Texture Background */
+        .desk-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #d4a373;
+            background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23faedcd' fill-opacity='0.1' fill-rule='evenodd'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40'/%3E%3C/g%3E%3C/svg%3E");
+            z-index: -1;
+        }
+
+        /* 3D Envelope */
+        .envelope-container {
+            width: 300px;
+            height: 200px;
+            position: relative;
+            margin: 20px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .envelope-container:hover {
+            transform: translateY(-10px);
+        }
+
+        .envelope {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #fdfbf7;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            border-radius: 5px;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #f3f4f6;
+            clip-path: polygon(0 0, 50% 50%, 100% 0);
+            transform-origin: top;
+            transition: transform 0.6s ease 0.2s, z-index 0.2s;
+            z-index: 3;
+            border-top: 2px solid #e5e7eb;
+        }
+        
+        .envelope-container.open .flap {
+            transform: rotateX(180deg);
+            z-index: 0;
+        }
+
+        .pocket {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            clip-path: polygon(0 100%, 50% 50%, 100% 100%);
+            z-index: 2;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        
+        .pocket-front {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent 40%, #f9fafb 100%);
+            z-index: 4;
+            pointer-events: none;
+        }
+
+        .letter-preview {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            background: #fffdf0;
+            padding: 15px;
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.2rem;
+            color: #4b5563;
+            transform: translateY(20px);
+            transition: transform 0.6s ease;
+            z-index: 1;
+            box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+        }
+
+        .envelope-container.open .letter-preview {
+            transform: translateY(-80px);
+            z-index: 5;
+        }
+
+        .wax-seal {
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50px;
+            height: 50px;
+            background: #ef4444;
+            border-radius: 50%;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3), inset 0 -4px 6px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255,255,255,0.8);
+            font-size: 24px;
+            z-index: 4;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            cursor: pointer;
+            border: 2px solid #b91c1c;
+        }
+        
+        .envelope-container.open .wax-seal {
+            transform: translate(-50%, -50%) scale(1.5);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .envelope-title {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+            font-family: 'Playfair Display', serif;
+            font-weight: bold;
+            color: #374151;
+            z-index: 5;
+            text-shadow: 0 1px 2px rgba(255,255,255,0.8);
+        }
+
+        /* Modal Letter */
+        .paper-texture {
+            background-color: #fffdf0;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23d1d5db' fill-opacity='0.2'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z'/%3E%3C/g%3E%3C/svg%3E");
+            box-shadow: 0 0 30px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="p-6 md:p-12">
+    <div class="desk-bg"></div>
+
+    <div class="max-w-7xl mx-auto relative z-10">
+        <header class="text-center mb-16">
+            <h1 class="text-5xl md:text-7xl font-bold text-gray-800 mb-4 drop-shadow-sm" style="font-family: 'Playfair Display', serif;">Open When...</h1>
+            <p class="text-2xl text-gray-700" style="font-family: 'Dancing Script', cursive;">Little notes for every mood</p>
+            <a href="../index.html" class="inline-block mt-6 px-6 py-2 bg-white/50 rounded-full text-purple-800 hover:bg-white/80 transition-all font-semibold backdrop-blur-sm">
+                ← Back to Home
+            </a>
+        </header>
+
+        <div id="letters-grid" class="flex flex-wrap justify-center gap-12">
+            <!-- Letters will be injected here -->
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="letter-modal" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 p-4 opacity-0 pointer-events-none transition-all duration-500 backdrop-blur-sm">
+        <div class="paper-texture rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto relative transform scale-90 transition-all duration-500 shadow-2xl rotate-1" id="modal-content">
+            <button id="close-modal" class="absolute top-4 right-4 text-gray-500 hover:text-red-500 text-3xl transition-colors">&times;</button>
+            <div class="p-10 md:p-16">
+                <h2 id="modal-title" class="text-4xl font-bold text-gray-800 mb-8 text-center border-b-2 border-gray-200 pb-4" style="font-family: 'Playfair Display', serif;"></h2>
+                <div class="prose prose-lg max-w-none">
+                    <p id="modal-body" class="text-xl text-gray-800 font-serif whitespace-pre-wrap leading-loose"></p>
+                </div>
+                <div class="mt-12 text-right">
+                    <p class="text-purple-800 font-bold text-3xl transform -rotate-2" style="font-family: 'Dancing Script', cursive;">With all my love,</p>
+                    <p class="text-gray-600 mt-2 font-serif">Your LumLum</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/config-loader.js"></script>
+    <script src="../js/music.js"></script>
+    <script src="../js/confetti.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Wait for config
+            let cfg;
+            if (window.SITE_CONFIG_READY) {
+                cfg = await window.SITE_CONFIG_READY;
+            } else {
+                cfg = window.SITE_CONFIG || await new Promise(r => {
+                    const check = setInterval(() => {
+                        if (window.SITE_CONFIG) { clearInterval(check); r(window.SITE_CONFIG); }
+                    }, 100);
+                });
+            }
+
+            const grid = document.getElementById('letters-grid');
+            const letters = cfg.letters || [];
+
+            letters.forEach((letter, index) => {
+                const container = document.createElement('div');
+                container.className = 'envelope-container';
+                container.innerHTML = `
+                    <div class="envelope">
+                        <div class="flap"></div>
+                        <div class="pocket"></div>
+                        <div class="pocket-front"></div>
+                        <div class="letter-preview">
+                            Dear Ayomide...
+                        </div>
+                        <div class="wax-seal">❤️</div>
+                        <div class="envelope-title">${letter.title}</div>
+                    </div>
+                `;
+                
+                container.onclick = () => {
+                    if (container.classList.contains('open')) {
+                        // Already open, show modal
+                        openModal(letter);
+                    } else {
+                        // Open animation
+                        container.classList.add('open');
+                        playPaperSound();
+                        setTimeout(() => {
+                            openModal(letter);
+                        }, 800);
+                    }
+                };
+                
+                grid.appendChild(container);
+            });
+
+            const modal = document.getElementById('letter-modal');
+            const modalContent = document.getElementById('modal-content');
+            const closeBtn = document.getElementById('close-modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalBody = document.getElementById('modal-body');
+
+            function openModal(letter) {
+                modalTitle.textContent = letter.title;
+                modalBody.textContent = letter.content;
+                modal.classList.remove('hidden', 'pointer-events-none');
+                
+                // Animation frame
+                requestAnimationFrame(() => {
+                    modal.classList.remove('opacity-0');
+                    modalContent.classList.remove('scale-90', 'rotate-1');
+                    modalContent.classList.add('scale-100', 'rotate-0');
+                });
+                
+                // Confetti effect
+                if (window.confetti) {
+                    window.confetti({
+                        particleCount: 60,
+                        spread: 100,
+                        origin: { y: 0.6 },
+                        colors: ['#d4a373', '#faedcd', '#e5e7eb'] // Paper colors
+                    });
+                }
+            }
+
+            function closeModal() {
+                modal.classList.add('opacity-0');
+                modalContent.classList.remove('scale-100', 'rotate-0');
+                modalContent.classList.add('scale-90', 'rotate-1');
+                setTimeout(() => {
+                    modal.classList.add('hidden', 'pointer-events-none');
+                    // Reset envelopes
+                    document.querySelectorAll('.envelope-container').forEach(el => el.classList.remove('open'));
+                }, 500);
+            }
+
+            closeBtn.onclick = (e) => {
+                e.stopPropagation();
+                closeModal();
+            };
+            
+            modal.onclick = (e) => {
+                if (e.target === modal) closeModal();
+            };
+        });
+
+        // Simple paper sound effect
+        function playPaperSound() {
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            
+            // White noise buffer for paper sound
+            const bufferSize = audioCtx.sampleRate * 0.5; // 0.5 seconds
+            const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const data = buffer.getChannelData(0);
+            
+            for (let i = 0; i < bufferSize; i++) {
+                data[i] = Math.random() * 2 - 1;
+            }
+            
+            const noise = audioCtx.createBufferSource();
+            noise.buffer = buffer;
+            
+            // Filter to make it sound like paper
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = 'bandpass';
+            filter.frequency.value = 1000;
+            
+            noise.connect(filter);
+            filter.connect(gain);
+            gain.connect(audioCtx.destination);
+            
+            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+            
+            noise.start();
+        }
+    </script>
+</body>
+</html>

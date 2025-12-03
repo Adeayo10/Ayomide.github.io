@@ -5,367 +5,424 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Our Destiny Timeline - For Ayomide</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:wght@400;700&family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(to bottom, #ffecd2 0%, #fcb69f 100%);
-            background-attachment: fixed;
+            background: #0f0c29;
+            background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e);
+            color: white;
+            overflow-x: hidden;
+            min-height: 100vh;
         }
         .title-font {
             font-family: 'Playfair Display', serif;
         }
+        .script-font {
+            font-family: 'Dancing Script', cursive;
+        }
+        
+        /* Starry Background */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle var(--duration) ease-in-out infinite;
+            opacity: var(--opacity);
+        }
+        @keyframes twinkle {
+            0%, 100% { opacity: var(--opacity); transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        /* Constellation Line */
         .timeline-container {
             position: relative;
-        }
-        .timeline-line {
-            position: absolute;
-            left: 50%;
-            top: 0;
-            bottom: 0;
-            width: 4px;
-            background: linear-gradient(to bottom, #f093fb, #f5576c);
-            transform: translateX(-50%);
-        }
-        .timeline-item {
-            opacity: 0;
-            animation: fadeInUp 0.8s ease forwards;
-        }
-        .timeline-item:nth-child(1) { animation-delay: 0.2s; }
-        .timeline-item:nth-child(2) { animation-delay: 0.4s; }
-        .timeline-item:nth-child(3) { animation-delay: 0.6s; }
-        .timeline-item:nth-child(4) { animation-delay: 0.8s; }
-        .timeline-item:nth-child(5) { animation-delay: 1s; }
-        
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .timeline-dot {
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 20px;
-            height: 20px;
-            background: white;
-            border: 4px solid #f093fb;
-            border-radius: 50%;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
             z-index: 10;
         }
         
+        .constellation-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        .constellation-path {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.3);
+            stroke-width: 2;
+            stroke-dasharray: 10;
+            animation: dash 100s linear infinite;
+        }
+        
+        @keyframes dash {
+            to { stroke-dashoffset: -1000; }
+        }
+
+        /* Timeline Items */
+        .timeline-item {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 100px;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+
+        .timeline-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .timeline-item:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
         .timeline-content {
-            width: calc(50% - 40px);
+            width: 45%;
+            background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
-            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+            transition: transform 0.3s ease;
         }
-        
-        .timeline-item:nth-child(odd) .timeline-content {
-            margin-left: auto;
-            margin-right: 40px;
+
+        .timeline-content:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.4);
         }
-        
-        .timeline-item:nth-child(even) .timeline-content {
-            margin-right: auto;
-            margin-left: 40px;
+
+        .timeline-date {
+            position: absolute;
+            top: -15px;
+            right: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
-        
-        @media (max-width: 768px) {
-            .timeline-line {
-                left: 20px;
-            }
-            .timeline-dot {
-                left: 20px;
-            }
-            .timeline-content {
-                width: calc(100% - 60px);
-                margin-left: 60px !important;
-                margin-right: 0 !important;
-            }
-        }
-        
-        .pulse-heart {
-            animation: pulse 2s ease-in-out infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-        
-        .music-btn {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            z-index: 100;
-            backdrop-filter: blur(10px);
-            background: rgba(240, 147, 251, 0.9);
-            transition: all 0.3s ease;
+
+        .timeline-icon {
             width: 60px;
             height: 60px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(240, 147, 251, 0.4);
+            font-size: 24px;
+            box-shadow: 0 0 20px rgba(240, 147, 251, 0.5);
+            z-index: 2;
+            margin: 0 40px;
+            position: relative;
         }
-        
-        .music-btn:hover {
-            transform: scale(1.1);
-            background: rgba(245, 87, 108, 0.9);
+
+        .timeline-icon::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.5);
+            animation: pulse-ring 2s infinite;
+        }
+
+        @keyframes pulse-ring {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+
+        .timeline-spacer {
+            width: 45%;
+        }
+
+        @media (max-width: 768px) {
+            .timeline-item {
+                flex-direction: column !important;
+                margin-bottom: 60px;
+            }
+            .timeline-content {
+                width: 90%;
+                margin-top: 20px;
+            }
+            .timeline-spacer {
+                display: none;
+            }
+            .timeline-icon {
+                margin: 0;
+            }
+            .constellation-svg {
+                display: none; /* Hide complex line on mobile for simplicity */
+            }
+            /* Simple vertical line for mobile */
+            .timeline-container::before {
+                content: '';
+                position: absolute;
+                left: 50%;
+                top: 0;
+                bottom: 0;
+                width: 2px;
+                background: rgba(255,255,255,0.2);
+                transform: translateX(-50%);
+                z-index: 0;
+            }
+        }
+
+        /* Glowing Text */
+        .glow-text {
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5), 0 0 20px rgba(255, 255, 255, 0.3);
         }
     </style>
 </head>
-<body class="min-h-screen py-12 px-4">
+<body>
+    <!-- Starry Background -->
+    <div class="stars" id="stars"></div>
+
     <!-- Header -->
-    <div class="max-w-4xl mx-auto text-center mb-16">
-        <div class="pulse-heart inline-block text-6xl mb-4">❤️</div>
-        <h1 class="title-font text-5xl md:text-6xl font-bold text-gray-800 mb-4">
+    <div class="relative z-10 text-center py-20 px-4">
+        <h1 class="title-font text-5xl md:text-7xl font-bold mb-4 glow-text">
             Our Destiny Timeline
         </h1>
-        <p class="text-xl text-gray-700 italic mb-3">
-            "Every moment was written in the stars, but we chose to make it real."
-        </p>
-        <p class="text-gray-600 mt-4">
-            September 8, 2025 — November 8, 2025
-        </p>
-        <p class="text-purple-600 font-semibold mt-2">
-            Two Months of Intentional Love 💜
+        <p class="script-font text-3xl md:text-4xl text-purple-300 opacity-90">
+            Written in the stars, lived by us.
         </p>
     </div>
 
     <!-- Timeline -->
-    <div class="timeline-container max-w-5xl mx-auto pb-12">
-        <div class="timeline-line"></div>
+    <div class="timeline-container">
+        <!-- SVG Line connecting items (generated by JS) -->
+        <svg class="constellation-svg" id="constellation-svg">
+            <path class="constellation-path" id="constellation-path" d="" />
+        </svg>
 
-        <!-- Timeline Item 1: First Message -->
-        <div class="timeline-item relative mb-16">
-            <div class="timeline-dot"></div>
-            <div class="timeline-content rounded-2xl shadow-xl p-6 md:p-8">
-                <div class="flex items-center gap-3 mb-3">
-                    <span class="text-3xl">💬</span>
-                    <h3 class="title-font text-2xl font-bold text-gray-800">The First Message</h3>
-                </div>
-                <p class="text-sm text-purple-600 font-semibold mb-3">January 11, 2025</p>
-                <p class="text-gray-700 leading-relaxed">
-                    The moment our conversation began, I knew something was different. Your words carried depth, 
-                    intelligence, and a spark that caught my attention immediately. This wasn't random — 
-                    this was the universe aligning two souls meant to meet. From that first exchange, 
-                    I felt a pull toward you that I couldn't explain, only embrace.
+        <!-- Item 1 -->
+        <div class="timeline-item">
+            <div class="timeline-content">
+                <div class="timeline-date">Jan 11, 2025</div>
+                <h3 class="title-font text-2xl font-bold mb-2 text-purple-200">The First Spark</h3>
+                <p class="text-gray-300 leading-relaxed">
+                    The universe aligned. Our first conversation wasn't just words; it was the beginning of a frequency only we could hear. I felt a pull I couldn't explain, a curiosity that would become my devotion.
+                </p>
+            </div>
+            <div class="timeline-icon">✨</div>
+            <div class="timeline-spacer"></div>
+        </div>
+
+        <!-- Item 2 -->
+        <div class="timeline-item">
+            <div class="timeline-spacer"></div>
+            <div class="timeline-icon">🌍</div>
+            <div class="timeline-content">
+                <div class="timeline-date">Jan - Sep 2025</div>
+                <h3 class="title-font text-2xl font-bold mb-2 text-purple-200">Bridging the Distance</h3>
+                <p class="text-gray-300 leading-relaxed">
+                    Miles apart, yet hearts intertwined. Through screens and voice notes, we built a foundation stronger than concrete. We proved that connection isn't about proximity, but intention.
                 </p>
             </div>
         </div>
 
-        <!-- Timeline Item 1.5: Long Distance Connection -->
-        <div class="timeline-item relative mb-16">
-            <div class="timeline-dot"></div>
-            <div class="timeline-content rounded-2xl shadow-xl p-6 md:p-8">
-                <div class="flex items-center gap-3 mb-3">
-                    <span class="text-3xl">🌍</span>
-                    <h3 class="title-font text-2xl font-bold text-gray-800">Building Across Distance</h3>
-                </div>
-                <p class="text-sm text-purple-600 font-semibold mb-3">January - September 2025</p>
-                <p class="text-gray-700 leading-relaxed">
-                    For months, we talked across distances. Different cities, different time zones, but the same 
-                    connection growing stronger every day. Late-night messages, voice notes, video calls that lasted 
-                    hours — distance couldn't dim what we were building. Every conversation was intentional, every 
-                    word meaningful. We proved that physical distance is no match for emotional closeness. 
-                    You became my constant, my peace, my favorite notification — no matter how many miles apart we were.
+        <!-- Item 3 -->
+        <div class="timeline-item">
+            <div class="timeline-content">
+                <div class="timeline-date">Sep 5-7, 2025</div>
+                <h3 class="title-font text-2xl font-bold mb-2 text-purple-200">The Realization</h3>
+                <p class="text-gray-300 leading-relaxed">
+                    Late night talks turned into deep soul-searching. I realized you weren't just a part of my life; you were becoming my life. I chose you, consciously and completely.
+                </p>
+            </div>
+            <div class="timeline-icon">🌙</div>
+            <div class="timeline-spacer"></div>
+        </div>
+
+        <!-- Item 4 -->
+        <div class="timeline-item">
+            <div class="timeline-spacer"></div>
+            <div class="timeline-icon">💍</div>
+            <div class="timeline-content">
+                <div class="timeline-date">Sep 8, 2025</div>
+                <h3 class="title-font text-2xl font-bold mb-2 text-purple-200">The Beginning: Official</h3>
+                <p class="text-gray-300 leading-relaxed">
+                    The day "we" became official. A promise made to honor, cherish, and grow with you. The start of our intentional journey as partners.
                 </p>
             </div>
         </div>
 
-        <!-- Timeline Item 2: Deep Conversations -->
-        <div class="timeline-item relative mb-16">
-            <div class="timeline-dot"></div>
-            <div class="timeline-content rounded-2xl shadow-xl p-6 md:p-8">
-                <div class="flex items-center gap-3 mb-3">
-                    <span class="text-3xl">🌙</span>
-                    <h3 class="title-font text-2xl font-bold text-gray-800">Late Night Revelations</h3>
-                </div>
-                <p class="text-sm text-purple-600 font-semibold mb-3">Early September 2025</p>
-                <p class="text-gray-700 leading-relaxed">
-                    Our conversations went from hours to all night. We shared dreams, fears, vulnerabilities. 
-                    I learned about your fire, your ambition, your heart. Each conversation revealed more reasons 
-                    why you're exactly who I've been searching for. You challenged me, inspired me, and made me want 
-                    to be more intentional in everything. Our foundation was being built, one honest word at a time.
+        <!-- Item 5 (Month 1) -->
+        <div class="timeline-item">
+            <div class="timeline-content">
+                <div class="timeline-date">Oct 8, 2025</div>
+                <h3 class="title-font text-2xl font-bold mb-2 text-purple-200">Month 1: <span data-config-text="themes.month1">Intentional</span></h3>
+                <p class="text-gray-300 leading-relaxed">
+                    30 days of choosing each other daily. We built our habits, set our standards, and started walking this path with purpose.
+                </p>
+            </div>
+            <div class="timeline-icon">🌱</div>
+            <div class="timeline-spacer"></div>
+        </div>
+
+        <!-- Item 6 (Month 2) -->
+        <div class="timeline-item">
+            <div class="timeline-spacer"></div>
+            <div class="timeline-icon">🧱</div>
+            <div class="timeline-content">
+                <div class="timeline-date">Nov 8, 2025</div>
+                <h3 class="title-font text-2xl font-bold mb-2 text-purple-200">Month 2: <span data-config-text="themes.month2">Consistency</span></h3>
+                <p class="text-gray-300 leading-relaxed">
+                    61 days of showing up. Through the busy days and the quiet ones, we proved that our love is a steady, constant force.
                 </p>
             </div>
         </div>
 
-        <!-- Timeline Item 3: The Decision -->
-        <div class="timeline-item relative mb-16">
-            <div class="timeline-dot"></div>
-            <div class="timeline-content rounded-2xl shadow-xl p-6 md:p-8">
-                <div class="flex items-center gap-3 mb-3">
-                    <span class="text-3xl">🔥</span>
-                    <h3 class="title-font text-2xl font-bold text-gray-800">The Intentional Choice</h3>
-                </div>
-                <p class="text-sm text-purple-600 font-semibold mb-3">September 5-7, 2025</p>
-                <p class="text-gray-700 leading-relaxed">
-                    I didn't stumble into loving you — I chose it. Every part of me analyzed, considered, and decided: 
-                    <em>this is the woman I want to build with.</em> Your strength, your vision, your soul — 
-                    everything aligned. I made a conscious decision to pursue you with purpose and devotion.
-                    This wasn't infatuation; it was recognition. I recognized my future in you.
+        <!-- Item 7 (Month 3) -->
+        <div class="timeline-item">
+            <div class="timeline-content">
+                <div class="timeline-date">Dec 8, 2025</div>
+                <h3 class="title-font text-2xl font-bold mb-2 text-purple-200">Month 3: <span data-config-text="themes.month3">Comfort</span></h3>
+                <p class="text-gray-300 leading-relaxed">
+                    91 days of pure magic. We've found a home in each other. A place where we can just be, safe and loved.
                 </p>
+                <a href="open-when.html" class="inline-block mt-4 text-sm text-pink-300 hover:text-white underline">Open Letters →</a>
             </div>
+            <div class="timeline-icon">🏡</div>
+            <div class="timeline-spacer"></div>
         </div>
 
-        <!-- Timeline Item 4: Becoming Official -->
-        <div class="timeline-item relative mb-16">
-            <div class="timeline-dot"></div>
-            <div class="timeline-content rounded-2xl shadow-xl p-6 md:p-8 border-4 border-purple-400">
-                <div class="flex items-center gap-3 mb-3">
-                    <span class="text-3xl">💍</span>
-                    <h3 class="title-font text-2xl font-bold text-gray-800">We Became Official</h3>
-                </div>
-                <p class="text-sm text-purple-600 font-semibold mb-3">September 8, 2025 ⭐</p>
-                <p class="text-gray-700 leading-relaxed">
-                    Two months ago, we made it official. This wasn't just a milestone — it was a declaration. 
-                    A promise to be intentional, to grow together, to build something extraordinary. 
-                    From this day forward, you became my partner, my vision, my future. The day we stopped being 
-                    "almost" and became "absolutely." The day I got to call you mine, and you got to call me yours.
+        <!-- Item 7 -->
+        <div class="timeline-item">
+            <div class="timeline-content">
+                <div class="timeline-date">Forever</div>
+                <h3 class="title-font text-2xl font-bold mb-2 text-purple-200">Written in the Stars</h3>
+                <p class="text-gray-300 leading-relaxed">
+                    This is just the beginning of our constellation. Our story has no end, only new chapters. You are my destiny, Ayomide.
                 </p>
             </div>
-        </div>
-
-        <!-- Timeline Item 5: Two-Month Anniversary -->
-        <div class="timeline-item relative mb-16">
-            <div class="timeline-dot" style="border-color: #f5576c; background: #f5576c;"></div>
-            <div class="timeline-content rounded-2xl shadow-xl p-6 md:p-8 bg-gradient-to-br from-pink-50 to-purple-50 border-4 border-pink-400">
-                <div class="flex items-center gap-3 mb-3">
-                    <span class="text-3xl">🎉</span>
-                    <h3 class="title-font text-2xl font-bold text-gray-800">Two-Month Anniversary</h3>
-                </div>
-                <p class="text-sm text-purple-600 font-semibold mb-3">November 8, 2025 ⭐</p>
-                <p class="text-gray-700 leading-relaxed mb-4">
-                    Today marks exactly two months since we made it official — 61 days of laughter, growth,
-                    late-night conversations, and intentional love. We've built something beautiful, Ayomide.
-                    From September 8 to November 8, we've proven that distance is no match for devotion,
-                    and time only strengthens what we have. These two months have been the beginning of our forever story.
-                </p>
-                <p class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 mb-4">
-                    Happy Two-Month Anniversary, My Love 💜
-                </p>
-            </div>
-        </div>
-
-        <!-- Timeline Item 6: Forever -->
-        <div class="timeline-item relative mb-16">
-            <div class="timeline-dot" style="border-color: #764ba2; background: #764ba2;"></div>
-            <div class="timeline-content rounded-2xl shadow-xl p-6 md:p-8 bg-gradient-to-br from-purple-50 to-pink-50">
-                <div class="flex items-center gap-3 mb-3">
-                    <span class="text-3xl">♾️</span>
-                    <h3 class="title-font text-2xl font-bold text-gray-800">Forever Starts Now</h3>
-                </div>
-            <p class="text-sm text-purple-600 font-semibold mb-3">November 8, 2025 — Infinity</p>
-                <p class="text-gray-700 leading-relaxed mb-4">
-                    This is just the beginning. Every day forward is another intentional step toward forever. 
-                    You are my steady part, my Firelighter, my Ayanfeoluwa, my Oluwasetemi, my Odunayo — 
-                    my destiny. Distance may separate us physically, but nothing can break what we're building.
-                </p>
-                <p class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">
-                    This is forever, Ayomide. Intentional. Unshakeable. Ours.
-                </p>
-            </div>
+            <div class="timeline-icon">♾️</div>
+            <div class="timeline-spacer"></div>
         </div>
     </div>
 
     <!-- Footer -->
-    <div class="max-w-4xl mx-auto text-center mt-16">
-        <p class="text-gray-700 text-lg italic mb-2">
-            "Every moment was written in the stars, but we chose to make it real."
-        </p>
-        <p class="text-gray-600">
-            Happy Two-Month Anniversary, My Love 💜
-        </p>
-        <p class="text-sm text-gray-500 mt-4">
-            Made with intentional love • November 8, 2025
-        </p>
-        <a href="anniversary-landing.html" class="inline-block mt-6 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-full hover:shadow-lg transition-all">
+    <div class="text-center pb-12 relative z-10">
+        <a href="../index.html" class="inline-block px-8 py-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-white hover:bg-white/20 transition-all">
             ← Back to Home
         </a>
     </div>
 
-    <!-- Music Button -->
-    <button id="musicBtn" class="music-btn" title="Toggle Music">
-        <svg id="playIcon" class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M8 5v14l11-7z"/>
-        </svg>
-        <svg id="pauseIcon" class="w-8 h-8 text-white hidden" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
-        </svg>
-    </button>
-
     <script>
-        // Music Control with Web Audio API
-        let audioContext;
-        let oscillators = [];
-        let gainNode;
-        let isPlaying = false;
-
-        const musicBtn = document.getElementById('musicBtn');
-        const playIcon = document.getElementById('playIcon');
-        const pauseIcon = document.getElementById('pauseIcon');
-
-        function initAudio() {
-            if (!audioContext) {
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                gainNode = audioContext.createGain();
-                gainNode.gain.value = 0.08;
-                gainNode.connect(audioContext.destination);
+        // Generate Stars
+        function createStars() {
+            const container = document.getElementById('stars');
+            const count = 200;
+            
+            for (let i = 0; i < count; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                
+                // Random position
+                const x = Math.random() * 100;
+                const y = Math.random() * 100;
+                
+                // Random size
+                const size = Math.random() * 3;
+                
+                // Random duration and opacity
+                const duration = Math.random() * 3 + 2;
+                const opacity = Math.random();
+                
+                star.style.left = x + '%';
+                star.style.top = y + '%';
+                star.style.width = size + 'px';
+                star.style.height = size + 'px';
+                star.style.setProperty('--duration', duration + 's');
+                star.style.setProperty('--opacity', opacity);
+                
+                container.appendChild(star);
             }
         }
 
-        function playMusic() {
-            initAudio();
+        // Draw Constellation Line
+        function drawLine() {
+            const items = document.querySelectorAll('.timeline-icon');
+            const path = document.getElementById('constellation-path');
+            const container = document.querySelector('.timeline-container');
             
-            const notes = [220, 277.18, 329.63, 440]; // A3, C#4, E4, A4 (A major chord arpeggio)
-            
-            notes.forEach((freq, i) => {
-                const osc = audioContext.createOscillator();
-                osc.type = 'sine';
-                osc.frequency.value = freq;
-                
-                const oscGain = audioContext.createGain();
-                oscGain.gain.value = 0.25;
-                
-                osc.connect(oscGain);
-                oscGain.connect(gainNode);
-                
-                osc.start(audioContext.currentTime + i * 0.3);
-                oscillators.push(osc);
+            if (window.innerWidth <= 768) return; // Don't draw on mobile
+
+            let d = '';
+            const containerRect = container.getBoundingClientRect();
+
+            items.forEach((item, index) => {
+                const rect = item.getBoundingClientRect();
+                // Calculate center relative to container
+                const x = rect.left + rect.width / 2 - containerRect.left;
+                const y = rect.top + rect.height / 2 - containerRect.top;
+
+                if (index === 0) {
+                    d += `M ${x} ${y}`;
+                } else {
+                    // Curved line
+                    const prevItem = items[index - 1];
+                    const prevRect = prevItem.getBoundingClientRect();
+                    const prevX = prevRect.left + prevRect.width / 2 - containerRect.left;
+                    const prevY = prevRect.top + prevRect.height / 2 - containerRect.top;
+                    
+                    const cp1x = prevX;
+                    const cp1y = (prevY + y) / 2;
+                    const cp2x = x;
+                    const cp2y = (prevY + y) / 2;
+
+                    d += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${x} ${y}`;
+                }
             });
-            
-            isPlaying = true;
-            playIcon.classList.add('hidden');
-            pauseIcon.classList.remove('hidden');
+
+            path.setAttribute('d', d);
         }
 
-        function stopMusic() {
-            oscillators.forEach(osc => {
-                try { osc.stop(); } catch(e) {}
+        // Scroll Animation
+        function checkScroll() {
+            const items = document.querySelectorAll('.timeline-item');
+            const triggerBottom = window.innerHeight * 0.8;
+
+            items.forEach(item => {
+                const itemTop = item.getBoundingClientRect().top;
+                if (itemTop < triggerBottom) {
+                    item.classList.add('visible');
+                }
             });
-            oscillators = [];
-            isPlaying = false;
-            playIcon.classList.remove('hidden');
-            pauseIcon.classList.add('hidden');
         }
 
-        musicBtn.addEventListener('click', () => {
-            if (isPlaying) {
-                stopMusic();
-            } else {
-                playMusic();
-            }
+        window.addEventListener('load', () => {
+            createStars();
+            drawLine();
+            checkScroll();
         });
+
+        window.addEventListener('resize', drawLine);
+        window.addEventListener('scroll', checkScroll);
     </script>
     <script src="../js/config-loader.js"></script>
     <script src="../js/confetti.js"></script>
